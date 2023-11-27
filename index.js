@@ -37,7 +37,7 @@ app.get('/', (req, res) => {
 			
 			const players = {
 				get: () => {
-					return fetch('http://localhost:3000/players').then(res=> res.json(this.baseUrl)).then(data => {
+					return fetch('http://51.20.188.214:3000/players').then(res=> res.json(this.baseUrl)).then(data => {
 						if(data) playersWrapper.textContent = JSON.stringify(data)
 					})
 				}
