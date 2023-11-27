@@ -214,6 +214,7 @@ app.delete('/players', (req, res) => {
 			);
 		} while (true);
 	} catch (e) {
+		console.log(e);
 		console.log('App crashed');
 		console.log('Reload App');
 	}
@@ -232,6 +233,6 @@ app.listen(3000, () => {
 	console.log('Сервер запущен на порту 3000');
 });
 
-// // "chrome-aws-lambda": "^10.1.0",
-// // "puppeteer": "^21.5.2",
-// // "puppeteer-core": "^10.4.0"
+// "chrome-aws-lambda": "^10.1.0",
+// "puppeteer": "^21.5.2",
+// "puppeteer-core": "^10.4.0"
