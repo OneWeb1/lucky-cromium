@@ -11,12 +11,16 @@ class TelegramBot {
 		this.urlApi = 'https://api.telegram.org/bot' + this.token + '/sendMessage';
 	}
 
-	sendMessage(message) {
-		axios.post(this.urlApi, {
-			chat_id: this.chatId,
-			parse_mode: 'html',
-			text: message,
-		});
+	async sendMessage(message) {
+		try {
+			await axios.post(this.urlApi, {
+				chat_id: this.chatId,
+				parse_mode: 'html',
+				text: message,
+			});
+		} catch (error) {
+			console.error('Error sending message:', error);
+		}
 	}
 }
 
@@ -31,7 +35,7 @@ const dataFilePath = 'players.json';
 
 app.get('/', (req, res) => {
 	res.send(`
-		<div class='players'>Hello from Express and Puppeteer http://51.20.188.214:3000</div>
+		<div class='players'>Hello from Express and Puppeteer http://51.20.188.214:3000 Free the top</div>
 		<script>
 			const playersWrapper = document.querySelector('.players')
 			
@@ -70,7 +74,12 @@ app.delete('/players', (req, res) => {
 			chatId: '-1001984482139',
 		});
 		const browser = await chromium.puppeteer.launch({
-			args: chromium.args,
+			args: [
+				'--no-sandbox',
+				'--disable-setuid-sandbox',
+				// Добавьте следующую строку для использования Xvfb
+				'--display=:99',
+			],
 			defaultViewport: chromium.defaultViewport,
 			executablePath: await chromium.executablePath,
 			headless: chromium.headless,
