@@ -31,7 +31,7 @@ const dataFilePath = 'players.json';
 
 app.get('/', (req, res) => {
 	res.send(`
-		<div class='players'>Hello from Express and Puppeteer</div>
+		<div class='players'>Hello from Express and Puppeteer http://51.20.188.214:3000</div>
 		<script>
 			const playersWrapper = document.querySelector('.players')
 			
