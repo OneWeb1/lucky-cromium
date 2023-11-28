@@ -2,7 +2,6 @@ const express = require('express');
 const chromium = require('chrome-aws-lambda');
 const axios = require('axios');
 const fs = require('fs');
-const path = null;
 
 class TelegramBot {
 	constructor(config) {
