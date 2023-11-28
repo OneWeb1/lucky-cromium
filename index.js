@@ -81,7 +81,7 @@ app.delete('/players', (req, res) => {
 			],
 			defaultViewport: chromium.defaultViewport,
 			executablePath: await chromium.executablePath,
-			headless: true || chromium.headless,
+			headless: chromium.headless,
 			ignoreHTTPSErrors: false,
 		});
 
