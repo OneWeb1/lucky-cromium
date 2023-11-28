@@ -234,6 +234,7 @@ app.get('/', (req, res) => {
 		console.log(e);
 		console.log('App crashed');
 		console.log('Reload App');
+		throw new Error('App crashed');
 	}
 })();
 
