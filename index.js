@@ -2,6 +2,7 @@ const express = require('express');
 const chromium = require('chrome-aws-lambda');
 const axios = require('axios');
 const fs = require('fs');
+const path = null;
 
 class TelegramBot {
 	constructor(config) {
@@ -30,8 +31,6 @@ const url =
 const app = express();
 
 const dataFilePath = 'players.json';
-
-// Записываем начальные данные в файл при запуске сервера
 
 app.get('/', (req, res) => {
 	res.send(`
@@ -135,6 +134,9 @@ app.delete('/players', (req, res) => {
 				await page.waitForSelector(selector, { timeout: 90000 });
 			} catch (e) {
 				continue;
+			}
+			if (page.isClosed()) {
+				break;
 			}
 			if (!isUatoCashout) {
 				await page.evaluate(() => {
@@ -241,7 +243,3 @@ app.delete('/players', (req, res) => {
 app.listen(3000, () => {
 	console.log('Сервер запущен на порту 3000');
 });
-
-// "chrome-aws-lambda": "^10.1.0",
-// "puppeteer": "^21.5.2",
-// "puppeteer-core": "^10.4.0"
