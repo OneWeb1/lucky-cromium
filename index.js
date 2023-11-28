@@ -33,38 +33,39 @@ const app = express();
 const dataFilePath = 'players.json';
 
 app.get('/', (req, res) => {
-	res.send(`
-		<div class='players'>Hello from Express and Puppeteer http://51.20.188.214:3000 Free the top</div>
-		<script>
-			const playersWrapper = document.querySelector('.players')
-			
-			const players = {
-				get: () => {
-					return fetch('http://16.171.161.20:3000/players').then(res=> res.json()).then(data => {
-						if(data) playersWrapper.textContent = JSON.stringify(data)
-					})
-				}
-			}
+	// res.send(`
+	// 	<div class='players'>Hello from Express and Puppeteer http://51.20.188.214:3000 Free the top</div>
+	// 	<script>
+	// 		const playersWrapper = document.querySelector('.players')
 
-			setInterval(() => {
-				players.get()
-			},1000)
-		</script>
-	`);
+	// 		const players = {
+	// 			get: () => {
+	// 				return fetch('http://16.171.161.20:3000/players').then(res=> res.json()).then(data => {
+	// 					if(data) playersWrapper.textContent = JSON.stringify(data)
+	// 				})
+	// 			}
+	// 		}
+
+	// 		setInterval(() => {
+	// 			players.get()
+	// 		},1000)
+	// 	</script>
+	// `);
+	res.send('Working...');
 
 	// Первый вызов функции
 });
 
-app.get('/players', (req, res) => {
-	// Чтение данных из файла
-	const data = fs.readFileSync(dataFilePath, 'utf-8');
-	res.json(data);
-});
+// app.get('/players', (req, res) => {
+// 	// Чтение данных из файла
+// 	const data = fs.readFileSync(dataFilePath, 'utf-8');
+// 	res.json(data);
+// });
 
-app.delete('/players', (req, res) => {
-	// Удаление файла
-	fs.writeFileSync(dataFilePath, JSON.stringify({}), 'utf-8');
-});
+// app.delete('/players', (req, res) => {
+// 	// Удаление файла
+// 	fs.writeFileSync(dataFilePath, JSON.stringify({}), 'utf-8');
+// });
 
 (async () => {
 	try {
@@ -212,7 +213,7 @@ app.delete('/players', (req, res) => {
 				console.log('-------------------------------------------'),
 			);
 
-			fs.writeFileSync(dataFilePath, playerLogs.join(''), 'utf-8');
+			//fs.writeFileSync(dataFilePath, playerLogs.join(''), 'utf-8');
 			bot.sendMessage(playerLogs.join(''));
 
 			// const message = playerLogs.join('') || '';
