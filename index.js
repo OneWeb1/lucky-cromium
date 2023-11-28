@@ -40,7 +40,7 @@ app.get('/', (req, res) => {
 			
 			const players = {
 				get: () => {
-					return fetch('http://16.171.39.22:3000/players').then(res=> res.json(this.baseUrl)).then(data => {
+					return fetch('http://16.171.161.20:3000/players').then(res=> res.json()).then(data => {
 						if(data) playersWrapper.textContent = JSON.stringify(data)
 					})
 				}
@@ -76,7 +76,12 @@ app.delete('/players', (req, res) => {
 			args: [
 				'--no-sandbox',
 				'--disable-setuid-sandbox',
-				// Добавьте следующую строку для использования Xvfb
+				'--disable-dev-shm-usage',
+				'--disable-accelerated-2d-canvas',
+				'--no-first-run',
+				'--no-zygote',
+				// "--single-process",
+				'--disable-gpu',
 				'--display=:0',
 			],
 			defaultViewport: chromium.defaultViewport,
@@ -130,13 +135,13 @@ app.delete('/players', (req, res) => {
 		let isUatoCashout = false;
 
 		do {
-			try {
-				await page.waitForSelector(selector, { timeout: 90000 });
-			} catch (e) {
+			if (page.isClosed()) {
 				continue;
 			}
-			if (page.isClosed()) {
-				break;
+			try {
+				await page.waitForSelector(selector, { timeout: 390000 });
+			} catch (e) {
+				continue;
 			}
 			if (!isUatoCashout) {
 				await page.evaluate(() => {
