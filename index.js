@@ -184,7 +184,7 @@ app.get('/', (req, res) => {
 					console.log(e);
 				}
 			}
-		}, 500);
+		}, 1);
 	} catch (e) {
 		console.log(e);
 		console.log('App crashed');
