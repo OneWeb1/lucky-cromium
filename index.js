@@ -102,8 +102,8 @@ app.get('/', (req, res) => {
 		let isLockInterval = false;
 
 		setInterval(async () => {
-			try {
-				if (!isLockInterval) {
+			if (!isLockInterval) {
+				try {
 					await page.waitForSelector(selector, { timeout: 390000 });
 					if (!isUatoCashout) {
 						await page.evaluate(() => {
@@ -178,12 +178,12 @@ app.get('/', (req, res) => {
 					);
 
 					isLockInterval = true;
+				} catch (e) {
+					console.log('client_loop: send disconnect: Connection reset');
+					console.log(e);
+				} finally {
+					isLockInterval = false;
 				}
-			} catch (e) {
-				console.log('client_loop: send disconnect: Connection reset');
-				console.log(e);
-			} finally {
-				isLockInterval = false;
 			}
 		}, 500);
 	} catch (e) {
