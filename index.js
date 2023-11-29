@@ -1,7 +1,6 @@
 const express = require('express');
 const chromium = require('chrome-aws-lambda');
 const axios = require('axios');
-const fs = require('fs');
 
 class TelegramBot {
 	constructor(config) {
@@ -29,42 +28,9 @@ const url =
 
 const app = express();
 
-const dataFilePath = 'players.json';
-
 app.get('/', (req, res) => {
-	// res.send(`
-	// 	<div class='players'>Hello from Express and Puppeteer http://51.20.188.214:3000 Free the top</div>
-	// 	<script>
-	// 		const playersWrapper = document.querySelector('.players')
-
-	// 		const players = {
-	// 			get: () => {
-	// 				return fetch('http://16.171.161.20:3000/players').then(res=> res.json()).then(data => {
-	// 					if(data) playersWrapper.textContent = JSON.stringify(data)
-	// 				})
-	// 			}
-	// 		}
-
-	// 		setInterval(() => {
-	// 			players.get()
-	// 		},1000)
-	// 	</script>
-	// `);
 	res.send('Working...');
-
-	// Первый вызов функции
 });
-
-// app.get('/players', (req, res) => {
-// 	// Чтение данных из файла
-// 	const data = fs.readFileSync(dataFilePath, 'utf-8');
-// 	res.json(data);
-// });
-
-// app.delete('/players', (req, res) => {
-// 	// Удаление файла
-// 	fs.writeFileSync(dataFilePath, JSON.stringify({}), 'utf-8');
-// });
 
 (async () => {
 	try {
@@ -130,105 +96,12 @@ app.get('/', (req, res) => {
 			}
 		});
 
-		const betButtons = await page.$$('.kuWarE');
-		const selector = '.iMfqvu';
-		let isUatoCashout = false;
-
-		do {
-			if (page.isClosed()) {
-				continue;
-			}
-			try {
-				await page.waitForSelector(selector, { timeout: 390000 });
-			} catch (e) {
-				continue;
-			}
-			if (!isUatoCashout) {
-				await page.evaluate(() => {
-					const inputs = document.querySelectorAll('#coef-input');
-					const checkboxes = document.querySelectorAll('.iJnjYA');
-					checkboxes[1].click();
-					checkboxes[3].click();
-					inputs.forEach(input => {
-						input.value = 1.5;
-					});
-				});
-
-				isUatoCashout = true;
-			}
-			const skeletonSelector = '.react-loading-skeleton';
-
-			try {
-				await page.waitForSelector(skeletonSelector, { timeout: 90000 });
-			} catch (e) {
-				console.log('Error');
-				continue;
-			}
-
-			// await page.waitForFunction(
-			// 	skeletonSelector => {
-			// 		const skeletons = document.querySelectorAll(skeletonSelector);
-			// 		return Array.from(skeletons).every(skeleton => {
-			// 			const { width, height } = skeleton.getBoundingClientRect();
-			// 			return width === 0 && height === 0;
-			// 		});
-			// 	},
-			// 	{},
-			// 	skeletonSelector,
-			// );
-
-			const players = await page.$$('.sc-hlzHbZ');
-			let playerLogs = [];
-
-			await new Promise(resolve => setTimeout(resolve, 2500));
-
-			await Promise.all(
-				players.map(async (player, index) => {
-					const gamer = await page.evaluate(player => {
-						const name =
-							player?.querySelector('.sc-gInZnl')?.innerText || 'Not load';
-						let bet = player?.querySelector('.sc-ACYlI')?.innerText || '0';
-						bet = Number(bet.split('.')[0].replace(/\D/gi, ''));
-						return {
-							name,
-							bet,
-						};
-					}, player);
-					console.log(`Игрок №${index} ${gamer.name} ${gamer.bet} `);
-					playerLogs.push(`Игрок №${index} ${gamer.name} ${gamer.bet} \n`);
-					if (gamer.name === '@PAVLOV_EVGEN') {
-						if (gamer.bet == 5000) {
-							betButtons[0].click();
-						} else if (gamer.bet == 10000) {
-							betButtons[1].click();
-						}
-						const date = new Date();
-						bot.sendMessage(`
-            ${gamer.name} ${gamer.bet}\n
-            ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}
-            `);
-					}
-				}),
-				console.log('-------------------------------------------'),
+		setInterval(() => {
+			const date = new Date();
+			bot.sendMessage(
+				`${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`,
 			);
-
-			//fs.writeFileSync(dataFilePath, playerLogs.join(''), 'utf-8');
-			bot.sendMessage(playerLogs.join(''));
-
-			// const message = playerLogs.join('') || '';
-			// console.log(message);
-			// bot.sendMessage(message);
-			// playerLogs = [];
-
-			await page.waitForFunction(
-				selector => {
-					const element = document.querySelector('.cTwCmb');
-					return !!element;
-				},
-				{ timeout: 500000 },
-				selector,
-			);
-		} while (true);
+		}, 20000);
 	} catch (e) {
 		console.log(e);
 		console.log('App crashed');
@@ -236,15 +109,6 @@ app.get('/', (req, res) => {
 		throw new Error('App crashed');
 	}
 })();
-
-// Ваши действия
-// fs.writeFileSync(
-// 	dataFilePath,
-// 	JSON.stringify({
-// 		www: [{ bet: '5000$', coefficient: Math.random(), date: {} }],
-// 	}),
-// 	'utf-8',
-// );
 
 app.listen(3000, () => {
 	console.log('Сервер запущен на порту 3000');
