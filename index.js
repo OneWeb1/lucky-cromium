@@ -174,11 +174,12 @@ const initSumBets = async () => {
 					}
 
 					if (players.length) {
+						let gamer = null;
 						try {
 							await Promise.all(
 								players.map(async (player, index) => {
 									try {
-										const gamer = await page.evaluate(player => {
+										gamer = await page.evaluate(player => {
 											const name =
 												player?.querySelector('.sc-gInZnl')?.innerText ||
 												'Not load';
