@@ -119,6 +119,14 @@ app.get('/', (req, res) => {
 
 				isUatoCashout = true;
 			}
+			const skeletonSelector = '.react-loading-skeleton';
+
+			try {
+				await page.waitForSelector(skeletonSelector, { timeout: 90000 });
+			} catch (e) {
+				console.log('Error');
+				continue;
+			}
 
 			const players = await page.$$('.sc-hlzHbZ');
 			let playerLogs = [];
