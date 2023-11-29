@@ -32,79 +32,102 @@ app.get('/', (req, res) => {
 	res.send('Working...');
 });
 
+const launchBrowser = async () => {
+	const browser = await chromium.puppeteer.launch({
+		args: [
+			'--no-sandbox',
+			'--disable-setuid-sandbox',
+			'--disable-dev-shm-usage',
+			'--disable-accelerated-2d-canvas',
+			'--no-first-run',
+			'--no-zygote',
+			// "--single-process",
+			'--disable-gpu',
+			'--display=:0',
+		],
+		defaultViewport: chromium.defaultViewport,
+		executablePath: await chromium.executablePath,
+		headless: chromium.headless,
+		ignoreHTTPSErrors: false,
+	});
+
+	return browser;
+};
+
+const createPage = async (browser, url) => {
+	const page = await browser.newPage();
+
+	const client = await page.target().createCDPSession();
+	const { width, height } = await page.evaluate(() => {
+		return {
+			width: window.outerWidth,
+			height: window.outerHeight - 250,
+		};
+	});
+
+	await client.send('Emulation.setDeviceMetricsOverride', {
+		width,
+		height,
+		deviceScaleFactor: 1,
+		mobile: false,
+	});
+	await page.setDefaultNavigationTimeout(60000);
+	await page.goto(url);
+
+	return page;
+};
+
+const initSumBets = async () => {
+	await page.evaluate(() => {
+		const balance = 500 || (300 / 4) * 10;
+		const oneBet = Math.floor((balance * 0.1) / 10) * 10;
+		const twoBet = oneBet * 2;
+		const betCounter = {
+			one: (oneBet - 20) / 10,
+			two: (twoBet - 20) / 10,
+		};
+		const boxes = document.querySelectorAll('.iopHCJ');
+		const plus1 = boxes[0].childNodes[2];
+		const plus2 = boxes[1].childNodes[2];
+		for (let i = 0; i < betCounter.one; i++) {
+			plus1.childNodes[0].click();
+		}
+		for (let i = 0; i < betCounter.two; i++) {
+			plus2.childNodes[0].click();
+		}
+	});
+};
+
 (async () => {
 	try {
 		const bot = new TelegramBot({
 			token: '5897805933:AAEAHBWLaEVoscocpAH82AvByBcNCp2Ojdw',
 			chatId: '-1001984482139',
 		});
-		const browser = await chromium.puppeteer.launch({
-			args: [
-				'--no-sandbox',
-				'--disable-setuid-sandbox',
-				'--disable-dev-shm-usage',
-				'--disable-accelerated-2d-canvas',
-				'--no-first-run',
-				'--no-zygote',
-				// "--single-process",
-				'--disable-gpu',
-				'--display=:0',
-			],
-			defaultViewport: chromium.defaultViewport,
-			executablePath: await chromium.executablePath,
-			headless: chromium.headless,
-			ignoreHTTPSErrors: false,
-		});
 
-		const page = await browser.newPage();
-
-		const client = await page.target().createCDPSession();
-		const { width, height } = await page.evaluate(() => {
-			return {
-				width: window.outerWidth,
-				height: window.outerHeight - 250,
-			};
-		});
-
-		await client.send('Emulation.setDeviceMetricsOverride', {
-			width,
-			height,
-			deviceScaleFactor: 1,
-			mobile: false,
-		});
-		await page.setDefaultNavigationTimeout(60000);
-		await page.goto(url);
+		const browser = await launchBrowser();
+		let page = await createPage(browser, url);
 
 		await page.waitForSelector('.fhnxTh', { timeout: 300000 });
 
-		await page.evaluate(() => {
-			const balance = 500 || (300 / 4) * 10;
-			const oneBet = Math.floor((balance * 0.1) / 10) * 10;
-			const twoBet = oneBet * 2;
-			const betCounter = {
-				one: (oneBet - 20) / 10,
-				two: (twoBet - 20) / 10,
-			};
-			const boxes = document.querySelectorAll('.iopHCJ');
-			const plus1 = boxes[0].childNodes[2];
-			const plus2 = boxes[1].childNodes[2];
-			for (let i = 0; i < betCounter.one; i++) {
-				plus1.childNodes[0].click();
-			}
-			for (let i = 0; i < betCounter.two; i++) {
-				plus2.childNodes[0].click();
-			}
-		});
+		//await installSumBets()
 
-		const betButtons = await page.$$('.kuWarE');
 		const selector = '.iMfqvu';
+		let betButtons = await page.$$('.kuWarE');
 		let isUatoCashout = false;
 		let isLockInterval = false;
 
 		setInterval(async () => {
+			const pages = await browser.pages();
 			try {
 				if (!isLockInterval) {
 					isLockInterval = true;
+					if (!pages || (pages && pages.length < 2)) {
+						console.log('После этого сообщения сервер работать не будет');
+						page = await createPage(url);
+						await page.waitForSelector('.fhnxTh', { timeout: 300000 });
+						betButtons = await page.$$('.kuWarE');
+					}
 					// if (!isUatoCashout) {
 					// 	await page.waitForSelector(selector, { timeout: 390000 });
 					// 	await page.evaluate(() => {
@@ -129,57 +152,57 @@ app.get('/', (req, res) => {
 
 					await new Promise(resolve => setTimeout(resolve, 2500));
 					bot.sendMessage('Вивод игроков');
-					// if (players.length) {
-					// 	try {
-					// 		await Promise.all(
-					// 			players.map(async (player, index) => {
-					// 				const gamer = await page.evaluate(player => {
-					// 					const name =
-					// 						player?.querySelector('.sc-gInZnl')?.innerText ||
-					// 						'Not load';
-					// 					let bet =
-					// 						player?.querySelector('.sc-ACYlI')?.innerText || '0';
-					// 					bet = Number(bet.split('.')[0].replace(/\D/gi, ''));
-					// 					return {
-					// 						name,
-					// 						bet,
-					// 					};
-					// 				}, player);
-					// 				// console.log(`Игрок №${index} ${gamer.name} ${gamer.bet} `);
-					// 				playerLogs.push(
-					// 					`Игрок №${index} ${gamer.name} ${gamer.bet} \n`,
-					// 				);
-					// 				if (gamer.name === '@PAVLOV_EVGEN') {
-					// 					if (gamer.bet == 5000) {
-					// 						betButtons[0]?.click();
-					// 					} else if (gamer.bet == 10000) {
-					// 						betButtons[1]?.click();
-					// 					}
-					// 					const date = new Date();
-					// 					bot.sendMessage(`
-					//   ${gamer.name} ${gamer.bet}\n
-					//   ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}
-					//   `);
-					// 				}
-					// 			}),
-					// 		);
-					// 	} catch (e) {
-					// 		console.log(e);
-					// 		console.log('Ошибка при работе Promise.all');
-					// 	}
-					// }
-					// console.log('-------------------------------------------');
-					// const getLogMessage = array => {
-					// 	if (array && array.length) {
-					// 		return array.join('');
-					// 	}
-					// 	return false;
-					// };
-					// const logMessage = getLogMessage(playerLogs);
-					// if (logMessage) {
-					// 	bot.sendMessage(logMessage);
-					// 	playerLogs = [];
-					// }
+					if (players.length) {
+						try {
+							await Promise.all(
+								players.map(async (player, index) => {
+									const gamer = await page.evaluate(player => {
+										const name =
+											player?.querySelector('.sc-gInZnl')?.innerText ||
+											'Not load';
+										let bet =
+											player?.querySelector('.sc-ACYlI')?.innerText || '0';
+										bet = Number(bet.split('.')[0].replace(/\D/gi, ''));
+										return {
+											name,
+											bet,
+										};
+									}, player);
+									// console.log(`Игрок №${index} ${gamer.name} ${gamer.bet} `);
+									playerLogs.push(
+										`Игрок №${index} ${gamer.name} ${gamer.bet} \n`,
+									);
+									if (gamer.name === '@PAVLOV_EVGEN') {
+										if (gamer.bet == 5000) {
+											betButtons[0]?.click();
+										} else if (gamer.bet == 10000) {
+											betButtons[1]?.click();
+										}
+										const date = new Date();
+										bot.sendMessage(`
+					  ${gamer.name} ${gamer.bet}\n
+					  ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}
+					  `);
+									}
+								}),
+							);
+						} catch (e) {
+							console.log(e);
+							console.log('Ошибка при работе Promise.all');
+						}
+					}
+					console.log('-------------------------------------------');
+					const getLogMessage = array => {
+						if (array && array.length) {
+							return array.join('');
+						}
+						return false;
+					};
+					const logMessage = getLogMessage(playerLogs);
+					if (logMessage) {
+						bot.sendMessage(logMessage);
+						playerLogs = [];
+					}
 
 					await page.waitForFunction(
 						selector => {
