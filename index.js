@@ -175,6 +175,7 @@ app.get('/', (req, res) => {
 					selector,
 				);
 			} catch (e) {
+				console.log(e);
 				console.log('client_loop: send disconnect: Connection reset');
 				continue;
 			}
