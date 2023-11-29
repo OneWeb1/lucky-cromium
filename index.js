@@ -100,7 +100,7 @@ app.get('/', (req, res) => {
 		const selector = '.iMfqvu';
 		let isUatoCashout = false;
 
-		do {
+		setInterval(async () => {
 			try {
 				await page.waitForSelector(selector, { timeout: 390000 });
 				if (!isUatoCashout) {
@@ -175,11 +175,10 @@ app.get('/', (req, res) => {
 					selector,
 				);
 			} catch (e) {
-				console.log(e);
 				console.log('client_loop: send disconnect: Connection reset');
-				continue;
+				console.log(e);
 			}
-		} while (true);
+		}, 500);
 	} catch (e) {
 		console.log(e);
 		console.log('App crashed');
