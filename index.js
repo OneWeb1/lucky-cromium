@@ -165,7 +165,16 @@ app.get('/', (req, res) => {
 			if (logMessage) {
 				bot.sendMessage(logMessage);
 				playerLogs = [];
-			} else console.log('err');
+			}
+
+			await page.waitForFunction(
+				selector => {
+					const element = document.querySelector('.cTwCmb');
+					return !!element;
+				},
+				{ timeout: 500000 },
+				selector,
+			);
 		} while (true);
 	} catch (e) {
 		console.log(e);
