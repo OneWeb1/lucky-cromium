@@ -191,4 +191,4 @@ app.listen(3000, () => {
 	console.log('Сервер запущен на порту 3000');
 });
 
-//pm2 start your-app.js --max-restarts 3 --wait-ready
+//pm2 start index.js --max-restarts 3 --wait-ready
