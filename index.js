@@ -145,29 +145,58 @@ const initSumBets = async () => {
 
 					const skeletonSelector = '.react-loading-skeleton';
 
-					await page.waitForSelector(skeletonSelector, { timeout: 90000 });
+					try {
+						await page.waitForSelector(skeletonSelector, { timeout: 90000 });
+					} catch (e) {
+						console.log(e);
+						console.log(
+							'await page.waitForSelector(skeletonSelector, { timeout: 90000 });',
+						);
+					}
+					let players = null;
 
-					const players = (await page.$$('.sc-hlzHbZ')) || [];
+					try {
+						players = (await page.$$('.sc-hlzHbZ')) || [];
+					} catch (e) {
+						console.log(e);
+						console.log(`players = (await page.$$('.sc-hlzHbZ')) || [];`);
+					}
+
 					let playerLogs = [];
 
-					await new Promise(resolve => setTimeout(resolve, 2500));
-					bot.sendMessage('Вивод игроков');
+					try {
+						await new Promise(resolve => setTimeout(resolve, 2500));
+					} catch (e) {
+						console.log(e);
+						console.log(
+							`await new Promise(resolve => setTimeout(resolve, 2500));`,
+						);
+					}
+
 					if (players.length) {
 						try {
 							await Promise.all(
 								players.map(async (player, index) => {
-									const gamer = await page.evaluate(player => {
-										const name =
-											player?.querySelector('.sc-gInZnl')?.innerText ||
-											'Not load';
-										let bet =
-											player?.querySelector('.sc-ACYlI')?.innerText || '0';
-										bet = Number(bet.split('.')[0].replace(/\D/gi, ''));
-										return {
-											name,
-											bet,
-										};
-									}, player);
+									try {
+										const gamer = await page.evaluate(player => {
+											const name =
+												player?.querySelector('.sc-gInZnl')?.innerText ||
+												'Not load';
+											let bet =
+												player?.querySelector('.sc-ACYlI')?.innerText || '0';
+											bet = Number(bet.split('.')[0].replace(/\D/gi, ''));
+											return {
+												name,
+												bet,
+											};
+										}, player);
+									} catch (e) {
+										console.log(e);
+										console.log(
+											`const gamer = await page.evaluate(player => {;`,
+										);
+									}
+
 									// console.log(`Игрок №${index} ${gamer.name} ${gamer.bet} `);
 									playerLogs.push(
 										`Игрок №${index} ${gamer.name} ${gamer.bet} \n`,
@@ -204,14 +233,28 @@ const initSumBets = async () => {
 						playerLogs = [];
 					}
 
-					await page.waitForFunction(
-						selector => {
-							const element = document.querySelector('.cTwCmb');
-							return !!element;
-						},
-						{ timeout: 500000 },
-						selector,
-					);
+					try {
+						await page.waitForFunction(
+							selector => {
+								const element = document.querySelector('.cTwCmb');
+								return !!element;
+							},
+							{ timeout: 500000 },
+							selector,
+						);
+					} catch (e) {
+						console.log(e);
+						console.log(
+							`await page.waitForFunction(
+							selector => {
+								const element = document.querySelector('.cTwCmb');
+								return !!element;
+							},
+							{ timeout: 500000 },
+							selector,
+						);`,
+						);
+					}
 
 					isLockInterval = false;
 				}
