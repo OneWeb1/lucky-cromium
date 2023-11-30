@@ -29,12 +29,15 @@ const url =
 
 const app = express();
 
+let interval = null;
+let browser = null;
+
 app.get('/', (req, res) => {
 	res.send('Working...');
 });
 
 const launchBrowser = async () => {
-	const browser = await chromium.puppeteer.launch({
+	browser = await chromium.puppeteer.launch({
 		args: [
 			'--no-sandbox',
 			'--disable-setuid-sandbox',
@@ -50,6 +53,7 @@ const launchBrowser = async () => {
 		executablePath: await chromium.executablePath,
 		headless: chromium.headless,
 		ignoreHTTPSErrors: false,
+		timeout: 0,
 	});
 
 	return browser;
@@ -72,7 +76,13 @@ const createPage = async (browser, url) => {
 		deviceScaleFactor: 1,
 		mobile: false,
 	});
-	await page.setDefaultNavigationTimeout(60000);
+
+	try {
+		await page.setDefaultNavigationTimeout(6000000);
+	} catch (error) {
+		await page.setDefaultNavigationTimeout(6000000);
+	}
+
 	await page.goto(url);
 
 	return page;
@@ -101,7 +111,7 @@ const initSumBets = async () => {
 
 let isLockInterval = false;
 
-(async () => {
+const luckyParser = async () => {
 	try {
 		const bot = new TelegramBot({
 			token: '5897805933:AAEAHBWLaEVoscocpAH82AvByBcNCp2Ojdw',
@@ -109,6 +119,7 @@ let isLockInterval = false;
 		});
 
 		const browser = await launchBrowser();
+
 		let page = await createPage(browser, url);
 
 		await page.waitForSelector('.fhnxTh', { timeout: 300000 });
@@ -119,7 +130,7 @@ let isLockInterval = false;
 		let betButtons = await page.$$('.kuWarE');
 		let isUatoCashout = false;
 
-		setInterval(async () => {
+		interval = setInterval(async () => {
 			const pages = await browser.pages();
 			if (!isLockInterval) {
 				try {
@@ -225,12 +236,14 @@ let isLockInterval = false;
 		console.log(e);
 		console.log('App crashed');
 		console.log('Reload App');
-		isLockInterval = true;
-		throw new Error('App crashed');
+		interval = clearInterval(interval);
+		await browser.close();
+		luckyParser();
 	}
-})();
+};
 
 app.listen(3000, () => {
+	luckyParser();
 	console.log('Сервер запущен на порту 3000');
 });
 
