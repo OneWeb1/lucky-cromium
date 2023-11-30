@@ -99,6 +99,8 @@ const initSumBets = async () => {
 	});
 };
 
+let isLockInterval = false;
+
 (async () => {
 	try {
 		const bot = new TelegramBot({
@@ -116,16 +118,15 @@ const initSumBets = async () => {
 		const selector = '.iMfqvu';
 		let betButtons = await page.$$('.kuWarE');
 		let isUatoCashout = false;
-		let isLockInterval = false;
 
 		setInterval(async () => {
 			const pages = await browser.pages();
-			try {
-				if (!isLockInterval) {
+			if (!isLockInterval) {
+				try {
 					isLockInterval = true;
 					if (!pages || (pages && pages.length < 2)) {
 						console.log('После этого сообщения сервер работать не будет');
-						page = await createPage(url);
+						page = await createPage(browser, url);
 						await page.waitForSelector('.fhnxTh', { timeout: 300000 });
 						betButtons = await page.$$('.kuWarE');
 					}
@@ -146,82 +147,49 @@ const initSumBets = async () => {
 
 					const skeletonSelector = '.react-loading-skeleton';
 
-					try {
-						await page.waitForSelector(skeletonSelector, { timeout: 90000 });
-					} catch (e) {
-						console.log(e);
-						console.log(
-							'await page.waitForSelector(skeletonSelector, { timeout: 90000 });',
-						);
-					}
-					let players = null;
+					await page.waitForSelector(skeletonSelector, { timeout: 90000 });
 
-					try {
-						players = (await page.$$('.sc-hlzHbZ')) || [];
-					} catch (e) {
-						console.log(e);
-						console.log(`players = (await page.$$('.sc-hlzHbZ')) || [];`);
-					}
+					const players = (await page.$$('.sc-hlzHbZ')) || [];
 
 					let playerLogs = [];
 
-					try {
-						await new Promise(resolve => setTimeout(resolve, 2500));
-					} catch (e) {
-						console.log(e);
-						console.log(
-							`await new Promise(resolve => setTimeout(resolve, 2500));`,
+					await new Promise(resolve => setTimeout(resolve, 2500));
+
+					if (players.length) {
+						await Promise.all(
+							players.map(async (player, index) => {
+								const gamer = await page.evaluate(player => {
+									const name =
+										player?.querySelector('.sc-gInZnl')?.innerText ||
+										'Not load';
+									let bet =
+										player?.querySelector('.sc-ACYlI')?.innerText || '0';
+									bet = Number(bet.split('.')[0].replace(/\D/gi, ''));
+									return {
+										name,
+										bet,
+									};
+								}, player);
+
+								// console.log(`Игрок №${index} ${gamer.name} ${gamer.bet} `);
+								playerLogs.push(
+									`Игрок №${index} ${gamer.name} ${gamer.bet} \n`,
+								);
+								if (gamer.name === '@PAVLOV_EVGEN') {
+									if (gamer.bet == 5000) {
+										betButtons[0]?.click();
+									} else if (gamer.bet == 10000) {
+										betButtons[1]?.click();
+									}
+									const date = new Date();
+									bot.sendMessage(`
+					  ${gamer.name} ${gamer.bet}\n
+					  ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}
+					  `);
+								}
+							}),
 						);
 					}
-
-					// if (players.length) {
-					// 	let gamer = null;
-					// 	try {
-					// 		await Promise.all(
-					// 			players.map(async (player, index) => {
-					// 				try {
-					// 					gamer = await page.evaluate(player => {
-					// 						const name =
-					// 							player?.querySelector('.sc-gInZnl')?.innerText ||
-					// 							'Not load';
-					// 						let bet =
-					// 							player?.querySelector('.sc-ACYlI')?.innerText || '0';
-					// 						bet = Number(bet.split('.')[0].replace(/\D/gi, ''));
-					// 						return {
-					// 							name,
-					// 							bet,
-					// 						};
-					// 					}, player);
-					// 				} catch (e) {
-					// 					console.log(e);
-					// 					console.log(
-					// 						`const gamer = await page.evaluate(player => {;`,
-					// 					);
-					// 				}
-
-					// 				// console.log(`Игрок №${index} ${gamer.name} ${gamer.bet} `);
-					// 				playerLogs.push(
-					// 					`Игрок №${index} ${gamer.name} ${gamer.bet} \n`,
-					// 				);
-					// 				if (gamer.name === '@PAVLOV_EVGEN') {
-					// 					if (gamer.bet == 5000) {
-					// 						betButtons[0]?.click();
-					// 					} else if (gamer.bet == 10000) {
-					// 						betButtons[1]?.click();
-					// 					}
-					// 					const date = new Date();
-					// 					bot.sendMessage(`
-					//   ${gamer.name} ${gamer.bet}\n
-					//   ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}
-					//   `);
-					// 				}
-					// 			}),
-					// 		);
-					// 	} catch (e) {
-					// 		console.log(e);
-					// 		console.log('Ошибка при работе Promise.all');
-					// 	}
-					// }
 					console.log('-------------------------------------------');
 					const getLogMessage = array => {
 						if (array && array.length) {
@@ -235,40 +203,29 @@ const initSumBets = async () => {
 						playerLogs = [];
 					}
 
-					try {
-						await page.waitForFunction(
-							selector => {
-								const element = document.querySelector('.cTwCmb');
-								return !!element;
-							},
-							{ timeout: 500000 },
-							selector,
-						);
-					} catch (e) {
-						console.log(e);
-						console.log(
-							`await page.waitForFunction(
-							selector => {
-								const element = document.querySelector('.cTwCmb');
-								return !!element;
-							},
-							{ timeout: 500000 },
-							selector,
-						);`,
-						);
-					}
+					await page.waitForFunction(
+						selector => {
+							const element = document.querySelector('.cTwCmb');
+							return !!element;
+						},
+						{ timeout: 500000 },
+						selector,
+					);
 
+					if ((await pages.length) > 1) isLockInterval = false;
+				} catch (e) {
+					console.log('client_loop: send disconnect: Connection reset');
+					console.log(e);
+					if ((await pages.length) < 2) await page.reload();
 					isLockInterval = false;
 				}
-			} catch (e) {
-				console.log('client_loop: send disconnect: Connection reset');
-				console.log(e);
 			}
 		}, 1);
 	} catch (e) {
 		console.log(e);
 		console.log('App crashed');
 		console.log('Reload App');
+		isLockInterval = true;
 		throw new Error('App crashed');
 	}
 })();
