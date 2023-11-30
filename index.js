@@ -53,7 +53,6 @@ const launchBrowser = async () => {
 		executablePath: await chromium.executablePath,
 		headless: chromium.headless,
 		ignoreHTTPSErrors: false,
-		timeout: 0,
 	});
 
 	return browser;
