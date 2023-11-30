@@ -19,7 +19,7 @@ class TelegramBot {
 			});
 			console.log('Message sent successfully:', message);
 		} catch (error) {
-			console.error('Error sending message:', error);
+			console.log('Error sending message:', error);
 		}
 	}
 }
@@ -216,7 +216,7 @@ let isLockInterval = false;
 				} catch (e) {
 					console.log('client_loop: send disconnect: Connection reset');
 					console.log(e);
-					if ((await pages.length) < 2) await page.reload();
+					await page.reload();
 					isLockInterval = false;
 				}
 			}
