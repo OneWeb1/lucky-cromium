@@ -231,7 +231,7 @@ const luckyParser = async () => {
 					console.log('client_loop: send disconnect: Connection reset');
 					console.log(e);
 					// if ((await pages.length) >= 2) await page.reload();
-					await page?.close();
+					//await page?.close();
 					isNewPage = true;
 					isLockInterval = false;
 				}
@@ -242,8 +242,8 @@ const luckyParser = async () => {
 		console.log('App crashed');
 		console.log('Reload App');
 		interval = clearInterval(interval);
-		await browser?.close();
-		luckyParser();
+		//await browser?.close();
+		//luckyParser();
 	}
 };
 
