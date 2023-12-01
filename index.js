@@ -31,6 +31,7 @@ const app = express();
 
 let interval = null;
 let browser = null;
+let n = 0;
 
 app.get('/', (req, res) => {
 	res.send('Working...');
