@@ -250,7 +250,7 @@ const luckyParser = async () => {
 	}
 };
 
-app.listen(3001, () => {
+app.listen(3002, () => {
 	luckyParser();
 	console.log('Сервер запущен на порту 3000');
 });
