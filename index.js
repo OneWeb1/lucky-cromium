@@ -242,7 +242,7 @@ const luckyParser = async () => {
 		console.log('App crashed');
 		console.log('Reload App');
 		interval = clearInterval(interval);
-		await browser.close();
+		await browser?.close();
 		luckyParser();
 	}
 };
