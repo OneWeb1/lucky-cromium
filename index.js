@@ -1,5 +1,5 @@
 const express = require('express');
-const puppeteer = require('puppeteer');
+const chromium = require('chrome-aws-lambda');
 const axios = require('axios');
 
 class TelegramBot {
@@ -37,8 +37,7 @@ app.get('/', (req, res) => {
 });
 
 const launchBrowser = async () => {
-	browser = await puppeteer.launch({
-		executablePath: '/usr/bin/google-chrome-stable',
+	browser = await chromium.puppeteer.launch({
 		args: [
 			'--no-sandbox',
 			'--disable-setuid-sandbox',
@@ -51,12 +50,9 @@ const launchBrowser = async () => {
 			'--disable-gpu',
 			'--display=:0',
 		],
-		defaultViewport: {
-			width: 1920,
-			height: 1080,
-			isMobile: false,
-		},
-		headless: false,
+		defaultViewport: chromium.defaultViewport,
+		executablePath: await chromium.executablePath,
+		headless: chromium.headless,
 		ignoreHTTPSErrors: false,
 		protocolTimeout: 1000000,
 	});
@@ -250,7 +246,7 @@ const luckyParser = async () => {
 	}
 };
 
-app.listen(3002, () => {
+app.listen(3003, () => {
 	luckyParser();
 	console.log('Сервер запущен на порту 3000');
 });
