@@ -45,6 +45,7 @@ const launchBrowser = async () => {
 			'--disable-accelerated-2d-canvas',
 			'--no-first-run',
 			'--no-zygote',
+			'--start-maximized',
 			// "--single-process",
 			'--disable-gpu',
 			'--display=:0',
@@ -53,7 +54,7 @@ const launchBrowser = async () => {
 		executablePath: await chromium.executablePath,
 		headless: chromium.headless,
 		ignoreHTTPSErrors: false,
-		protocolTimeout: 100000,
+		protocolTimeout: 1000000,
 	});
 
 	return browser;
@@ -110,6 +111,7 @@ const initSumBets = async () => {
 };
 
 let isLockInterval = false;
+let isNewPage = false;
 
 const luckyParser = async () => {
 	try {
@@ -135,7 +137,8 @@ const luckyParser = async () => {
 			if (!isLockInterval) {
 				try {
 					isLockInterval = true;
-					if (!pages || (pages && pages.length < 2)) {
+					if (isNewPage || !pages || (pages && pages.length < 2)) {
+						if (isNewPage) isNewPage = false;
 						console.log('После этого сообщения сервер работать не будет');
 						page = await createPage(browser, url);
 						await page.waitForSelector('.fhnxTh', { timeout: 300000 });
@@ -227,7 +230,8 @@ const luckyParser = async () => {
 				} catch (e) {
 					console.log('client_loop: send disconnect: Connection reset');
 					console.log(e);
-					await page.reload();
+					// if ((await pages.length) >= 2) await page.reload();
+					isNewPage = true;
 					isLockInterval = false;
 				}
 			}
