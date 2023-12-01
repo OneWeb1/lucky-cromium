@@ -1,5 +1,5 @@
 const express = require('express');
-const chromium = require('chrome-aws-lambda');
+const puppeteer = require('puppeteer-core');
 const axios = require('axios');
 
 class TelegramBot {
@@ -37,7 +37,8 @@ app.get('/', (req, res) => {
 });
 
 const launchBrowser = async () => {
-	browser = await chromium.puppeteer.launch({
+	browser = await puppeteer.launch({
+		executablePath: '/usr/bin/google-chrome',
 		args: [
 			'--no-sandbox',
 			'--disable-setuid-sandbox',
@@ -50,9 +51,12 @@ const launchBrowser = async () => {
 			'--disable-gpu',
 			'--display=:0',
 		],
-		defaultViewport: chromium.defaultViewport,
-		executablePath: await chromium.executablePath,
-		headless: chromium.headless,
+		defaultViewport: {
+			width: 1920,
+			height: 1080,
+			isMobile: false,
+		},
+		headless: false,
 		ignoreHTTPSErrors: false,
 		protocolTimeout: 1000000,
 	});
