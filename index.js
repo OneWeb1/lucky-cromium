@@ -248,3 +248,10 @@ app.listen(3003, () => {
 });
 
 //pm2 start index.js --max-restarts 3 --wait-ready
+
+/*
+Xvfb -ac :0 -screen 0 1280x1024x16 &
+export DISPLAY=:0
+
+pm2 start index.js --max-restarts 9000000000 --wait-ready --watch --ignore-watch="node_modules"
+*/
