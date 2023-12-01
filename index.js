@@ -135,105 +135,101 @@ const luckyParser = async () => {
 		interval = setInterval(async () => {
 			const pages = await browser.pages();
 			if (!isLockInterval) {
-				try {
-					isLockInterval = true;
-					if (isNewPage || !pages || (pages && pages.length < 2)) {
-						if (isNewPage) isNewPage = false;
-						console.log('После этого сообщения сервер работать не будет');
-						page = await createPage(browser, url);
-						await page.waitForSelector('.fhnxTh', { timeout: 300000 });
-						betButtons = await page.$$('.kuWarE');
-					}
-					// if (!isUatoCashout) {
-					// 	await page.waitForSelector(selector, { timeout: 390000 });
-					// 	await page.evaluate(() => {
-					// 		const inputs = document.querySelectorAll('#coef-input');
-					// 		const checkboxes = document.querySelectorAll('.iJnjYA');
-					// 		checkboxes[1].click();
-					// 		checkboxes[3].click();
-					// 		inputs.forEach(input => {
-					// 			input.value = 1.5;
-					// 		});
-					// 	});
+				// try {
+				isLockInterval = true;
+				if (isNewPage || !pages || (pages && pages.length < 2)) {
+					if (isNewPage) isNewPage = false;
+					console.log('После этого сообщения сервер работать не будет');
+					page = await createPage(browser, url);
+					await page.waitForSelector('.fhnxTh', { timeout: 300000 });
+					betButtons = await page.$$('.kuWarE');
+				}
+				// if (!isUatoCashout) {
+				// 	await page.waitForSelector(selector, { timeout: 390000 });
+				// 	await page.evaluate(() => {
+				// 		const inputs = document.querySelectorAll('#coef-input');
+				// 		const checkboxes = document.querySelectorAll('.iJnjYA');
+				// 		checkboxes[1].click();
+				// 		checkboxes[3].click();
+				// 		inputs.forEach(input => {
+				// 			input.value = 1.5;
+				// 		});
+				// 	});
 
-					// 	isUatoCashout = true;
-					// }
+				// 	isUatoCashout = true;
+				// }
 
-					const skeletonSelector = '.react-loading-skeleton';
+				const skeletonSelector = '.react-loading-skeleton';
 
-					await page.waitForSelector(skeletonSelector, { timeout: 90000 });
+				await page.waitForSelector(skeletonSelector, { timeout: 90000 });
 
-					const players = (await page.$$('.sc-hlzHbZ')) || [];
+				const players = (await page.$$('.sc-hlzHbZ')) || [];
 
-					let playerLogs = [];
+				let playerLogs = [];
 
-					await new Promise(resolve => setTimeout(resolve, 2500));
+				await new Promise(resolve => setTimeout(resolve, 2500));
 
-					if (players.length) {
-						await Promise.all(
-							players.map(async (player, index) => {
-								const gamer = await page.evaluate(player => {
-									const name =
-										player?.querySelector('.sc-gInZnl')?.innerText ||
-										'Not load';
-									let bet =
-										player?.querySelector('.sc-ACYlI')?.innerText || '0';
-									bet = Number(bet.split('.')[0].replace(/\D/gi, ''));
-									return {
-										name,
-										bet,
-									};
-								}, player);
+				if (players.length) {
+					await Promise.all(
+						players.map(async (player, index) => {
+							const gamer = await page.evaluate(player => {
+								const name =
+									player?.querySelector('.sc-gInZnl')?.innerText || 'Not load';
+								let bet = player?.querySelector('.sc-ACYlI')?.innerText || '0';
+								bet = Number(bet.split('.')[0].replace(/\D/gi, ''));
+								return {
+									name,
+									bet,
+								};
+							}, player);
 
-								// console.log(`Игрок №${index} ${gamer.name} ${gamer.bet} `);
-								playerLogs.push(
-									`Игрок №${index} ${gamer.name} ${gamer.bet} \n`,
-								);
-								if (gamer.name === '@PAVLOV_EVGEN') {
-									if (gamer.bet == 5000) {
-										betButtons[0]?.click();
-									} else if (gamer.bet == 10000) {
-										betButtons[1]?.click();
-									}
-									const date = new Date();
-									bot.sendMessage(`
+							// console.log(`Игрок №${index} ${gamer.name} ${gamer.bet} `);
+							playerLogs.push(`Игрок №${index} ${gamer.name} ${gamer.bet} \n`);
+							if (gamer.name === '@PAVLOV_EVGEN') {
+								if (gamer.bet == 5000) {
+									betButtons[0]?.click();
+								} else if (gamer.bet == 10000) {
+									betButtons[1]?.click();
+								}
+								const date = new Date();
+								bot.sendMessage(`
 					  ${gamer.name} ${gamer.bet}\n
 					  ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}
 					  `);
-								}
-							}),
-						);
-					}
-					console.log('-------------------------------------------');
-					const getLogMessage = array => {
-						if (array && array.length) {
-							return array.join('');
-						}
-						return 'Wait players';
-					};
-					const logMessage = getLogMessage(playerLogs);
-					if (logMessage) {
-						bot.sendMessage(logMessage);
-						playerLogs = [];
-					}
-
-					await page.waitForFunction(
-						selector => {
-							const element = document.querySelector('.cTwCmb');
-							return !!element;
-						},
-						{ timeout: 500000 },
-						selector,
+							}
+						}),
 					);
-
-					if ((await pages.length) > 1) isLockInterval = false;
-				} catch (e) {
-					console.log('client_loop: send disconnect: Connection reset');
-					console.log(e);
-					// if ((await pages.length) >= 2) await page.reload();
-					isNewPage = true;
-					isLockInterval = false;
 				}
+				console.log('-------------------------------------------');
+				const getLogMessage = array => {
+					if (array && array.length) {
+						return array.join('');
+					}
+					return 'Wait players';
+				};
+				const logMessage = getLogMessage(playerLogs);
+				if (logMessage) {
+					bot.sendMessage(logMessage);
+					playerLogs = [];
+				}
+
+				await page.waitForFunction(
+					selector => {
+						const element = document.querySelector('.cTwCmb');
+						return !!element;
+					},
+					{ timeout: 500000 },
+					selector,
+				);
+
+				if ((await pages.length) > 1) isLockInterval = false;
+				// } catch (e) {
+				// 	console.log('client_loop: send disconnect: Connection reset');
+				// 	console.log(e);
+				// 	// if ((await pages.length) >= 2) await page.reload();
+				// 	isNewPage = true;
+				// 	isLockInterval = false;
+				// }
 			}
 		}, 1);
 	} catch (e) {
