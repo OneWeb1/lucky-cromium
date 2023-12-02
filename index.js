@@ -123,6 +123,7 @@ const watchReload = () => {
 
 let isLockInterval = false;
 let isNewPage = false;
+let messageNumbers = 0;
 
 const luckyParser = async () => {
 	try {
@@ -190,9 +191,11 @@ const luckyParser = async () => {
 								}, player);
 
 								// console.log(`Игрок №${index} ${gamer.name} ${gamer.bet} `);
-								playerLogs.push(
-									`Игрок №${index} ${gamer.name} ${gamer.bet} \n`,
-								);
+								playerLogs.push({
+									index,
+									name: gamer.name,
+									bet: gamer.bet,
+								});
 								if (gamer.name === '@PAVLOV_EVGEN') {
 									if (gamer.bet == 5000) {
 										betButtons[0]?.click();
@@ -208,18 +211,27 @@ const luckyParser = async () => {
 							}),
 						);
 					}
+
 					console.log('-------------------------------------------');
 					const getLogMessage = array => {
 						if (array && array.length) {
-							return array.join('');
+							return array
+								.map(item => {
+									return `Игрок №${item.index} ${item.name} ${item.bet}\n`;
+								})
+								.join('');
 						}
-						return 'Wait players';
+						return null;
 					};
+
 					const logMessage = getLogMessage(playerLogs);
+
 					if (logMessage) {
 						bot.sendMessage(logMessage);
+						messageNumbers++;
 						playerLogs = [];
 					}
+					if (messageNumbers >= 10) throw new Error('Reload');
 
 					await page.waitForFunction(
 						selector => {
@@ -257,7 +269,7 @@ app.listen(3003, () => {
 Xvfb -ac :0 -screen 0 1280x1024x16 &
 export DISPLAY=:0
 
-pm2 start index.js --max-memory-restart 9000 --wait-ready --watch --ignore-watch="node_modules" --exp-backoff-restart-delay=100 --no-daemon
+pm2 start index.js --wait-ready --watch --ignore-watch="node_modules" --exp-backoff-restart-delay=5000 --no-daemon
 
 
 */
