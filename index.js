@@ -136,7 +136,7 @@ const luckyParser = async () => {
 
 		let page = await createPage(browser, url);
 
-		await page.waitForSelector('.fhnxTh', { timeout: 300000 });
+		await page.waitForSelector('.fhnxTh', { timeout: 500000 });
 
 		//await installSumBets()
 
@@ -166,7 +166,7 @@ const luckyParser = async () => {
 
 					const skeletonSelector = '.react-loading-skeleton';
 
-					await page.waitForSelector(skeletonSelector, { timeout: 90000 });
+					await page.waitForSelector(skeletonSelector, { timeout: 500000 });
 
 					const players = (await page.$$('.sc-hlzHbZ')) || [];
 
