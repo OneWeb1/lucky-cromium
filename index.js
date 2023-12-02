@@ -110,6 +110,16 @@ const initSumBets = async () => {
 	});
 };
 
+const watchReload = () => {
+	fs.writeFile('reload.json', 'reload', err => {
+		if (err) {
+			console.error('Error writing to file:', err);
+		} else {
+			console.log('Data written to file successfully.');
+		}
+	});
+};
+
 let isLockInterval = false;
 let isNewPage = false;
 
@@ -137,13 +147,6 @@ const luckyParser = async () => {
 			if (!isLockInterval) {
 				try {
 					isLockInterval = true;
-					if (isNewPage || !pages || (pages && pages.length < 2)) {
-						if (isNewPage) isNewPage = false;
-						console.log('После этого сообщения сервер работать не будет');
-						page = await createPage(browser, url);
-						await page.waitForSelector('.fhnxTh', { timeout: 300000 });
-						betButtons = await page.$$('.kuWarE');
-					}
 					// if (!isUatoCashout) {
 					// 	await page.waitForSelector(selector, { timeout: 390000 });
 					// 	await page.evaluate(() => {
@@ -230,9 +233,7 @@ const luckyParser = async () => {
 				} catch (e) {
 					console.log('client_loop: send disconnect: Connection reset');
 					console.log(e);
-					if ((await pages.length) >= 2) await page.reload();
-					//isNewPage = true;
-					isLockInterval = false;
+					watchReload();
 				}
 			}
 		}, 1);
@@ -240,9 +241,7 @@ const luckyParser = async () => {
 		console.log(e);
 		console.log('App crashed');
 		console.log('Reload App');
-		interval = clearInterval(interval);
-		await browser.close();
-		luckyParser();
+		watchReload();
 	}
 };
 
@@ -257,7 +256,7 @@ app.listen(3003, () => {
 Xvfb -ac :0 -screen 0 1280x1024x16 &
 export DISPLAY=:0
 
-pm2-runtime start index.js --max-memory-restart 9000 --wait-ready --watch --ignore-watch="node_modules"
+pm2-runtime start index.js --max-memory-restart 9000 --wait-ready --watch --ignore-watch="node_modules" --exp-backoff-restart-delay=100
 
 
 */
