@@ -223,7 +223,7 @@ const luckyParser = async () => {
 						messageNumbers++;
 						playerLogs = [];
 					}
-					if (messageNumbers >= 2) throw new Error('Reload');
+					if (messageNumbers >= 100) throw new Error('Reload');
 
 					await page.waitForFunction(
 						selector => {
