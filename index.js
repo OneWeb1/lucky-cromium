@@ -257,7 +257,7 @@ app.listen(3003, () => {
 Xvfb -ac :0 -screen 0 1280x1024x16 &
 export DISPLAY=:0
 
-pm2-runtime start index.js --max-memory-restart 9000 --wait-ready --watch --ignore-watch="node_modules" --exp-backoff-restart-delay=100
+pm2 start index.js --max-memory-restart 9000 --wait-ready --watch --ignore-watch="node_modules" --exp-backoff-restart-delay=100 --no-daemon
 
 
 */
