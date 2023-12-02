@@ -245,7 +245,7 @@ const luckyParser = async () => {
 						selector,
 					);
 
-					if ((await pages.length) > 1) isLockInterval = false;
+					if ((await pages.length) > 100) isLockInterval = false;
 				} catch (e) {
 					console.log('client_loop: send disconnect: Connection reset');
 					console.log(e);
