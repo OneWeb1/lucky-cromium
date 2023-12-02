@@ -231,7 +231,7 @@ const luckyParser = async () => {
 						messageNumbers++;
 						playerLogs = [];
 					}
-					if (messageNumbers >= 3) {
+					if (messageNumbers >= 100) {
 						messageNumbers = 0;
 						throw new Error('Reload');
 					}
@@ -245,7 +245,7 @@ const luckyParser = async () => {
 						selector,
 					);
 
-					if ((await pages.length) > 100) isLockInterval = false;
+					if ((await pages.length) > 1) isLockInterval = false;
 				} catch (e) {
 					console.log('client_loop: send disconnect: Connection reset');
 					console.log(e);
@@ -272,7 +272,7 @@ app.listen(3003, () => {
 Xvfb -ac :0 -screen 0 1280x1024x16 &
 export DISPLAY=:0
 
-pm2 start index.js --wait-ready --watch --ignore-watch="node_modules" --exp-backoff-restart-delay=5000 --no-daemon
+pm2 start index.js --wait-ready --watch --ignore-watch="node_modules" --no-daemon
 
 
 */
