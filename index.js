@@ -55,7 +55,7 @@ const launchBrowser = async () => {
 		executablePath: await chromium.executablePath,
 		headless: chromium.headless,
 		ignoreHTTPSErrors: false,
-		protocolTimeout: 900000000000,
+		protocolTimeout: 1000000,
 	});
 
 	return browser;
@@ -136,7 +136,7 @@ const luckyParser = async () => {
 
 		let page = await createPage(browser, url);
 
-		await page.waitForSelector('.fhnxTh', { timeout: 900000000000 });
+		await page.waitForSelector('.fhnxTh', { timeout: 300000 });
 
 		//await installSumBets()
 
@@ -166,9 +166,7 @@ const luckyParser = async () => {
 
 					const skeletonSelector = '.react-loading-skeleton';
 
-					await page.waitForSelector(skeletonSelector, {
-						timeout: 900000000000,
-					});
+					await page.waitForSelector(skeletonSelector, { timeout: 90000 });
 
 					const players = (await page.$$('.sc-hlzHbZ')) || [];
 
@@ -193,11 +191,9 @@ const luckyParser = async () => {
 								}, player);
 
 								// console.log(`Игрок №${index} ${gamer.name} ${gamer.bet} `);
-								playerLogs.push({
-									index,
-									name: gamer.name,
-									bet: gamer.bet,
-								});
+								playerLogs.push(
+									`Игрок №${index} ${gamer.name} ${gamer.bet} \n`,
+								);
 								if (gamer.name === '@PAVLOV_EVGEN') {
 									if (gamer.bet == 5000) {
 										betButtons[0]?.click();
@@ -217,33 +213,24 @@ const luckyParser = async () => {
 					console.log('-------------------------------------------');
 					const getLogMessage = array => {
 						if (array && array.length) {
-							return array
-								.map(item => {
-									return `Игрок №${item.index} ${item.name} ${item.bet}\n`;
-								})
-								.join('');
+							return array.join('');
 						}
-						return null;
+						return 'Wait players';
 					};
-
 					const logMessage = getLogMessage(playerLogs);
-
 					if (logMessage) {
 						bot.sendMessage(logMessage);
 						messageNumbers++;
 						playerLogs = [];
 					}
-					if (messageNumbers >= 100) {
-						messageNumbers = 0;
-						throw new Error('Reload');
-					}
+					if (messageNumbers >= 2) throw new Error('Reload');
 
 					await page.waitForFunction(
 						selector => {
 							const element = document.querySelector('.cTwCmb');
 							return !!element;
 						},
-						{ timeout: 900000000000 },
+						{ timeout: 500000 },
 						selector,
 					);
 
