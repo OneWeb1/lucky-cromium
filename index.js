@@ -231,7 +231,7 @@ const luckyParser = async () => {
 						messageNumbers++;
 						playerLogs = [];
 					}
-					if (messageNumbers >= 100) {
+					if (messageNumbers >= 3) {
 						messageNumbers = 0;
 						throw new Error('Reload');
 					}
