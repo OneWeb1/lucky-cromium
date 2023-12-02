@@ -55,7 +55,7 @@ const launchBrowser = async () => {
 		executablePath: await chromium.executablePath,
 		headless: chromium.headless,
 		ignoreHTTPSErrors: false,
-		protocolTimeout: 1000000,
+		protocolTimeout: 900000000000,
 	});
 
 	return browser;
@@ -136,7 +136,7 @@ const luckyParser = async () => {
 
 		let page = await createPage(browser, url);
 
-		await page.waitForSelector('.fhnxTh', { timeout: 300000 });
+		await page.waitForSelector('.fhnxTh', { timeout: 900000000000 });
 
 		//await installSumBets()
 
@@ -166,7 +166,9 @@ const luckyParser = async () => {
 
 					const skeletonSelector = '.react-loading-skeleton';
 
-					await page.waitForSelector(skeletonSelector, { timeout: 90000 });
+					await page.waitForSelector(skeletonSelector, {
+						timeout: 900000000000,
+					});
 
 					const players = (await page.$$('.sc-hlzHbZ')) || [];
 
@@ -241,7 +243,7 @@ const luckyParser = async () => {
 							const element = document.querySelector('.cTwCmb');
 							return !!element;
 						},
-						{ timeout: 500000 },
+						{ timeout: 900000000000 },
 						selector,
 					);
 
