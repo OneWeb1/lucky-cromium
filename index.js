@@ -18,7 +18,7 @@ class TelegramBot {
 				parse_mode: 'html',
 				text: message,
 			});
-			console.log('Message sent successfully:', message);
+			//console.log('Message sent successfully:', message);
 		} catch (error) {
 			console.log('Error sending message:', error);
 		}
@@ -184,6 +184,12 @@ const luckyParser = async () => {
 									let bet =
 										player?.querySelector('.sc-ACYlI')?.innerText || '0';
 									bet = Number(bet.split('.')[0].replace(/\D/gi, ''));
+									console.log({
+										name,
+										bet,
+										nameTrimLength: name.trim().length,
+										nameLength: name.length,
+									});
 									return {
 										name,
 										bet,
@@ -203,7 +209,7 @@ const luckyParser = async () => {
 									const date = new Date();
 									bot.sendMessage(`
 					  ${gamer.name} ${gamer.bet}\n
-					  ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}
+					  ${date.getHours() + 2}:${date.getMinutes()}:${date.getSeconds()}
 					  `);
 								}
 							}),
@@ -217,6 +223,7 @@ const luckyParser = async () => {
 						}
 						return 'Wait players';
 					};
+
 					const logMessage = getLogMessage(playerLogs);
 					if (logMessage) {
 						bot.sendMessage(logMessage);
