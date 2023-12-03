@@ -90,7 +90,7 @@ const createPage = async (browser, url) => {
 	return page;
 };
 
-const initSumBets = async () => {
+const initSumBets = async page => {
 	await page.evaluate(() => {
 		const balance = 100 || (300 / 4) * 10;
 		const oneBet = Math.floor((balance * 0.1) / 10) * 10;
@@ -102,10 +102,15 @@ const initSumBets = async () => {
 		const boxes = document.querySelectorAll('.iopHCJ');
 		const plus1 = boxes[0].childNodes[2];
 		const plus2 = boxes[1].childNodes[2];
+		const minus1 = boxes[0].childNodes[0];
+		const minus2 = boxes[1].childNodes[0];
+		minus1.childNodes[0].click();
+		minus2.childNodes[0].click();
+		console.log(betCounter.one, betCounter.two);
 		for (let i = 0; i < betCounter.one; i++) {
 			plus1.childNodes[0].click();
 		}
-		for (let i = 0; i < betCounter.two; i++) {
+		for (let i = 0; i < 1; i++) {
 			plus2.childNodes[0].click();
 		}
 	});
@@ -138,7 +143,7 @@ const luckyParser = async () => {
 
 		await page.waitForSelector('.fhnxTh', { timeout: 500000 });
 
-		await installSumBets();
+		await initSumBets(page);
 
 		const selector = '.iMfqvu';
 		let betButtons = await page.$$('.kuWarE');
@@ -178,8 +183,12 @@ const luckyParser = async () => {
 						await Promise.all(
 							players.map(async (player, index) => {
 								const gamer = await page.evaluate(player => {
-									const name = player.querySelector('.sc-gInZnl').innerText;
-									let bet = player.querySelector('.sc-ACYlI').innerText;
+									let name = '';
+									let bet = '0';
+									if (player.querySelector('.sc-gInZnl'))
+										name = player.querySelector('.sc-gInZnl').innerText;
+									if (player.querySelector('.sc-ACYlI'))
+										bet = player.querySelector('.sc-ACYlI').innerText;
 									bet = Number(bet.split('.')[0].replace(/\D/gi, ''));
 									return {
 										name,
