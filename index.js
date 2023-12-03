@@ -170,9 +170,9 @@ const luckyParser = async () => {
 
 					const players = (await page.$$('.sc-hlzHbZ')) || [];
 
-					await new Promise(resolve => setTimeout(resolve, 2500));
-
 					let playerLogs = [];
+
+					await new Promise(resolve => setTimeout(resolve, 2500));
 
 					if (players.length) {
 						await Promise.all(
@@ -191,11 +191,9 @@ const luckyParser = async () => {
 								}, player);
 
 								// console.log(`Игрок №${index} ${gamer.name} ${gamer.bet} `);
-								playerLogs.push({
-									name: gamer.name,
-									bet: gamer.bet,
-									id: index,
-								});
+								playerLogs.push(
+									`Игрок №${index} ${gamer.name} ${gamer.bet} \n`,
+								);
 								if (gamer.name === '@PAVLOV_EVGEN') {
 									if (gamer.bet == 5000) {
 										betButtons[0]?.click();
@@ -213,26 +211,17 @@ const luckyParser = async () => {
 					}
 
 					console.log('-------------------------------------------');
-
 					const getLogMessage = array => {
-						return array?.length
-							? array
-									.map(
-										player =>
-											`Игрок №${player.id} ${player.name} ${player.bet}\n`,
-									)
-									.join('')
-							: 'Wait players...';
+						if (array && array.length) {
+							return array.join('');
+						}
+						return 'Wait players';
 					};
-
-					const isSomeNames = playerLogs?.some(
-						player => player.name.trim().length >= 3,
-					);
 					const logMessage = getLogMessage(playerLogs);
-					console.log({ isSomeNames });
-					if (logMessage && isSomeNames) {
+					if (logMessage) {
 						bot.sendMessage(logMessage);
 						messageNumbers++;
+						playerLogs = [];
 					}
 					if (messageNumbers >= 100) throw new Error('Reload');
 
@@ -241,7 +230,7 @@ const luckyParser = async () => {
 							const element = document.querySelector('.cTwCmb');
 							return !!element;
 						},
-						{ timeout: 5000000 },
+						{ timeout: 500000 },
 						selector,
 					);
 
