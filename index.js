@@ -92,7 +92,7 @@ const createPage = async (browser, url) => {
 
 const initSumBets = async () => {
 	await page.evaluate(() => {
-		const balance = 500 || (300 / 4) * 10;
+		const balance = 100 || (300 / 4) * 10;
 		const oneBet = Math.floor((balance * 0.1) / 10) * 10;
 		const twoBet = oneBet * 2;
 		const betCounter = {
@@ -138,7 +138,7 @@ const luckyParser = async () => {
 
 		await page.waitForSelector('.fhnxTh', { timeout: 500000 });
 
-		//await installSumBets()
+		await installSumBets();
 
 		const selector = '.iMfqvu';
 		let betButtons = await page.$$('.kuWarE');
@@ -149,20 +149,20 @@ const luckyParser = async () => {
 			if (!isLockInterval) {
 				try {
 					isLockInterval = true;
-					// if (!isUatoCashout) {
-					// 	await page.waitForSelector(selector, { timeout: 390000 });
-					// 	await page.evaluate(() => {
-					// 		const inputs = document.querySelectorAll('#coef-input');
-					// 		const checkboxes = document.querySelectorAll('.iJnjYA');
-					// 		checkboxes[1].click();
-					// 		checkboxes[3].click();
-					// 		inputs.forEach(input => {
-					// 			input.value = 1.5;
-					// 		});
-					// 	});
+					if (!isUatoCashout) {
+						await page.waitForSelector(selector, { timeout: 390000 });
+						await page.evaluate(() => {
+							const inputs = document.querySelectorAll('#coef-input');
+							const checkboxes = document.querySelectorAll('.iJnjYA');
+							checkboxes[1].click();
+							checkboxes[3].click();
+							inputs.forEach(input => {
+								input.value = 1.5;
+							});
+						});
 
-					// 	isUatoCashout = true;
-					// }
+						isUatoCashout = true;
+					}
 
 					const skeletonSelector = '.react-loading-skeleton';
 
@@ -178,11 +178,8 @@ const luckyParser = async () => {
 						await Promise.all(
 							players.map(async (player, index) => {
 								const gamer = await page.evaluate(player => {
-									const name =
-										player?.querySelector('.sc-gInZnl')?.innerText ||
-										'Not load';
-									let bet =
-										player?.querySelector('.sc-ACYlI')?.innerText || '0';
+									const name = player.querySelector('.sc-gInZnl').innerText;
+									let bet = player.querySelector('.sc-ACYlI').innerText;
 									bet = Number(bet.split('.')[0].replace(/\D/gi, ''));
 									return {
 										name,
@@ -198,9 +195,9 @@ const luckyParser = async () => {
 								});
 								if (gamer.name === '@PAVLOV_EVGEN') {
 									if (gamer.bet == 5000) {
-										betButtons[0]?.click();
+										betButtons[0].click();
 									} else if (gamer.bet == 10000) {
-										betButtons[1]?.click();
+										betButtons[1].click();
 									}
 									const date = new Date();
 									bot.sendMessage(`
@@ -213,9 +210,8 @@ const luckyParser = async () => {
 					}
 
 					console.log('-------------------------------------------');
-
 					const getLogMessage = array => {
-						return array?.length
+						return array.length
 							? array
 									.map(
 										player =>
@@ -225,7 +221,7 @@ const luckyParser = async () => {
 							: 'Wait players...';
 					};
 
-					const isSomeNames = playerLogs?.some(
+					const isSomeNames = playerLogs.some(
 						player => player.name.trim().length >= 3,
 					);
 					const logMessage = getLogMessage(playerLogs);
