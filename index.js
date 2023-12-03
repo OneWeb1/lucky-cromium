@@ -18,7 +18,7 @@ class TelegramBot {
 				parse_mode: 'html',
 				text: message,
 			});
-			//console.log('Message sent successfully:', message);
+			console.log('Message sent successfully:', message);
 		} catch (error) {
 			console.log('Error sending message:', error);
 		}
@@ -171,7 +171,6 @@ const luckyParser = async () => {
 					const players = (await page.$$('.sc-hlzHbZ')) || [];
 
 					let playerLogs = [];
-					let playerLogsTest = [];
 
 					await new Promise(resolve => setTimeout(resolve, 2500));
 
@@ -195,10 +194,6 @@ const luckyParser = async () => {
 								playerLogs.push(
 									`Игрок №${index} ${gamer.name} ${gamer.bet} \n`,
 								);
-								playerLogsTest.push({
-									name,
-									bet,
-								});
 								if (gamer.name === '@PAVLOV_EVGEN') {
 									if (gamer.bet == 5000) {
 										betButtons[0]?.click();
@@ -208,24 +203,13 @@ const luckyParser = async () => {
 									const date = new Date();
 									bot.sendMessage(`
 					  ${gamer.name} ${gamer.bet}\n
-					  ${date.getHours() + 2}:${date.getMinutes()}:${date.getSeconds()}
+					  ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}
 					  `);
 								}
 							}),
 						);
 					}
 
-					playerLogsTest.forEach(player => {
-						const { name, bet } = player;
-						console.log(
-							JSON.stringify({
-								name,
-								bet,
-								nameTrimLength: name.trim().length,
-								nameLength: name.length,
-							}),
-						);
-					});
 					console.log('-------------------------------------------');
 					const getLogMessage = array => {
 						if (array && array.length) {
@@ -233,15 +217,13 @@ const luckyParser = async () => {
 						}
 						return 'Wait players';
 					};
-
 					const logMessage = getLogMessage(playerLogs);
 					if (logMessage) {
 						bot.sendMessage(logMessage);
 						messageNumbers++;
 						playerLogs = [];
-						playerLogsTest = [];
 					}
-					//if (messageNumbers >= 100) throw new Error('Reload');
+					if (messageNumbers >= 100) throw new Error('Reload');
 
 					await page.waitForFunction(
 						selector => {
@@ -256,7 +238,7 @@ const luckyParser = async () => {
 				} catch (e) {
 					console.log('client_loop: send disconnect: Connection reset');
 					console.log(e);
-					//watchReload();
+					watchReload();
 				}
 			}
 		}, 1);
@@ -264,7 +246,7 @@ const luckyParser = async () => {
 		console.log(e);
 		console.log('App crashed');
 		console.log('Reload App');
-		//watchReload();
+		watchReload();
 	}
 };
 
