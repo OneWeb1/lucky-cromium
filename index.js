@@ -229,10 +229,10 @@ const luckyParser = async () => {
 						player => player.name.trim().length >= 3,
 					);
 					const logMessage = getLogMessage(playerLogs);
-					if (logMessage && some) {
+					console.log({ isSomeNames });
+					if (logMessage && isSomeNames) {
 						bot.sendMessage(logMessage);
 						messageNumbers++;
-						playerLogs = [];
 					}
 					if (messageNumbers >= 100) throw new Error('Reload');
 
