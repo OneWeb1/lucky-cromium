@@ -249,7 +249,7 @@ const luckyParser = async () => {
 				} catch (e) {
 					console.log('client_loop: send disconnect: Connection reset');
 					console.log(e);
-					//watchReload();
+					watchReload();
 				}
 			}
 		}, 1);
@@ -257,7 +257,7 @@ const luckyParser = async () => {
 		console.log(e);
 		console.log('App crashed');
 		console.log('Reload App');
-		//watchReload();
+		watchReload();
 	}
 };
 
