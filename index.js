@@ -121,7 +121,6 @@ const watchReload = () => {
 	});
 };
 
-let playerLogs = [];
 let isLockInterval = false;
 let isNewPage = false;
 let messageNumbers = 0;
@@ -172,6 +171,8 @@ const luckyParser = async () => {
 					const players = (await page.$$('.sc-hlzHbZ')) || [];
 
 					await new Promise(resolve => setTimeout(resolve, 2500));
+
+					let playerLogs = [];
 
 					if (players.length) {
 						await Promise.all(
