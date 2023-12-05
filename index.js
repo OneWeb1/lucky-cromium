@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/players', (req, res) => {
-	res.json(JSON.stringify(p));
+	res.json(p);
 });
 
 let isLockInterval = false;
