@@ -45,6 +45,11 @@ const luckyParser = async () => {
 
 		let betButtons = await page.$$('.kuWarE');
 
+		const randomRGBA = () => {
+			const random = () => Math.floor(Math.random() * 150);
+			return `rgba(${random()}, ${random()}, ${random()}, 1)`;
+		};
+
 		const interval = setInterval(async () => {
 			if (!isLockInterval) {
 				try {
@@ -58,10 +63,13 @@ const luckyParser = async () => {
 						const name = player.name;
 						const date = new Date();
 						if (!p[name] && player.name.length >= 3) {
-							p[name] = [];
+							p[name] = {
+								avatar: randomRGBA(),
+								games: [],
+							};
 						}
 						if (p[name])
-							p[name].push({
+							p[name].games.push({
 								betNumber: player.bet,
 								betString: player.betString,
 								x: player.x,

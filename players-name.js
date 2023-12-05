@@ -5,6 +5,7 @@ const getPlayerNames = async (page, players, callback) => {
 				const nameEl = player.querySelector('.sc-gInZnl');
 				const betEl = player.querySelector('.sc-ACYlI');
 				const xEl = player.querySelector('.sc-fLcnxK');
+				const winEl = document.querySelector('.sc-fFRahO');
 
 				let name = '0';
 				let bet = '0';
@@ -15,12 +16,14 @@ const getPlayerNames = async (page, players, callback) => {
 				if (betEl) bet = betEl.innerText;
 				const betNumber = Number(bet.split('.')[0].replace(/\D/gi, ''));
 				if (xEl) x = xEl.innerText;
+				if (winEl) betWin = winEl.innerText;
 
 				return {
 					name,
 					bet: betNumber,
 					betString: bet,
 					x,
+					betWin,
 				};
 			}, player);
 
