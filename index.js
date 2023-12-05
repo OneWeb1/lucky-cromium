@@ -65,6 +65,7 @@ const luckyParser = async () => {
 						if (!p[name] && player.name.length >= 3) {
 							p[name] = {
 								avatar: randomRGBA(),
+								name,
 								games: [],
 							};
 						}
@@ -73,6 +74,7 @@ const luckyParser = async () => {
 								betNumber: player.bet,
 								betString: player.betString,
 								x: player.x,
+								betWin: player.betWin,
 								date: {
 									hours: date.getHours(),
 									minutes: date.getMinutes(),
