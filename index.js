@@ -72,14 +72,13 @@ const luckyParser = async () => {
 								},
 							});
 					});
-					fs.writeFile('players.json', JSON.stringify(p), err => {
-						if (err) {
-							console.error('Error writing to file:', err);
-						} else {
-							console.log('Data written to file successfully.');
-						}
-					});
-					console.log(JSON.stringify(p));
+					// fs.writeFile('players.json', JSON.stringify(p), err => {
+					// 	if (err) {
+					// 		console.error('Error writing to file:', err);
+					// 	} else {
+					// 		console.log('Data written to file successfully.');
+					// 	}
+					// });
 
 					isLockInterval = false;
 				} catch (e) {
