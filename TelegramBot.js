@@ -15,7 +15,7 @@ class TelegramBot {
 				parse_mode: 'html',
 				text: message,
 			});
-			console.log('Message sent successfully:', message);
+			// console.log('Message sent successfully:', message);
 		} catch (error) {
 			console.log('Error sending message:', error);
 		}

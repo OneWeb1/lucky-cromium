@@ -1,7 +1,6 @@
 const pn = require('./players-name');
 
 const selector = '.iMfqvu';
-let players = [];
 
 const roundEnd = async (page, callback) => {
 	await page.waitForFunction(
@@ -19,11 +18,10 @@ const roundEnd = async (page, callback) => {
 		page,
 		playersEl,
 		player => {
-			players.push(player);
+			callback(player);
 		},
 		true,
 	);
-	callback(players);
 };
 
 module.exports = { roundEnd };

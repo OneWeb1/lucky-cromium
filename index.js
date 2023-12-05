@@ -12,7 +12,7 @@ const url =
 
 const app = express();
 
-const playersDB = {};
+const p = {};
 
 app.get('/', (req, res) => {
 	res.send('Working...');
@@ -42,9 +42,19 @@ const luckyParser = async () => {
 
 					if (roundNumber >= 100) throw new Error('Reload');
 
-					await after.roundEnd(page, players => {
-						console.log(players);
+					await after.roundEnd(page, player => {
+						const name = player.name;
+						if (!p[name]) {
+							p[name] = [];
+						}
+						p[name].push({
+							betNumber: player.bet,
+							betString: player.betString,
+							x: player.x,
+						});
 					});
+					fs.writeFileSync('players.json', JSON.stringify(p));
+					//console.log(JSON.stringify(p));
 
 					isLockInterval = false;
 				} catch (e) {
