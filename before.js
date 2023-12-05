@@ -101,7 +101,6 @@ const roundStarted = async (page, betButtons) => {
 	});
 
 	console.log('-------------------------------------------');
-	console.log(playerLogs);
 	const isSomeNames = utils.someNames(playerLogs);
 	const logMessage = utils.getLogMessage(playerLogs);
 	console.log({ isSomeNames });

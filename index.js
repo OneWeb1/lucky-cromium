@@ -12,6 +12,8 @@ const url =
 
 const app = express();
 
+const playersDB = {};
+
 app.get('/', (req, res) => {
 	res.send('Working...');
 });
@@ -40,7 +42,9 @@ const luckyParser = async () => {
 
 					if (roundNumber >= 100) throw new Error('Reload');
 
-					await after.roundEnd(page);
+					await after.roundEnd(page, players => {
+						console.log(players);
+					});
 
 					isLockInterval = false;
 				} catch (e) {

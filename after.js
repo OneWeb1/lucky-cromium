@@ -1,8 +1,9 @@
 const pn = require('./players-name');
 
 const selector = '.iMfqvu';
+let players = [];
 
-const roundEnd = async page => {
+const roundEnd = async (page, callback) => {
 	await page.waitForFunction(
 		selector => {
 			const element = document.querySelector('.cTwCmb');
@@ -12,16 +13,17 @@ const roundEnd = async page => {
 		selector,
 	);
 
-	const players = (await page.$$('.sc-hlzHbZ')) || [];
+	const playersEl = (await page.$$('.sc-hlzHbZ')) || [];
 
 	pn.getPlayerNames(
 		page,
-		players,
-		(player, index) => {
-			console.log(player);
+		playersEl,
+		player => {
+			players.push(player);
 		},
 		true,
 	);
+	callback(players);
 };
 
 module.exports = { roundEnd };
