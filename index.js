@@ -18,6 +18,10 @@ app.get('/', (req, res) => {
 	res.send('Working...');
 });
 
+app.get('/players', (req, res) => {
+	res.json(JSON.stringify(p));
+});
+
 let isLockInterval = false;
 let roundNumber = 0;
 
