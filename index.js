@@ -44,17 +44,30 @@ const luckyParser = async () => {
 
 					await after.roundEnd(page, player => {
 						const name = player.name;
-						if (!p[name]) {
+						const date = new Date();
+						if (!p[name] && player.name.length >= 3) {
 							p[name] = [];
 						}
-						p[name].push({
-							betNumber: player.bet,
-							betString: player.betString,
-							x: player.x,
-						});
+						if (p[name])
+							p[name].push({
+								betNumber: player.bet,
+								betString: player.betString,
+								x: player.x,
+								date: {
+									hours: date.getHours(),
+									minutes: date.getMinutes(),
+									seconds: date.getSeconds(),
+								},
+							});
 					});
-					fs.writeFileSync('players.json', JSON.stringify(p));
-					//console.log(JSON.stringify(p));
+					fs.writeFile('players.json', JSON.stringify(p), err => {
+						if (err) {
+							console.error('Error writing to file:', err);
+						} else {
+							console.log('Data written to file successfully.');
+						}
+					});
+					console.log(JSON.stringify(p));
 
 					isLockInterval = false;
 				} catch (e) {
