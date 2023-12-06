@@ -27,6 +27,7 @@ const getPlayerNames = async (page, players, callback) => {
 					bet: betNumber,
 					betString: bet,
 					x,
+					xNumber,
 					betWin,
 				};
 			}, player);
