@@ -15,8 +15,8 @@ const getPlayerNames = async (page, players, callback) => {
 
 				if (nameEl) name = nameEl.innerText;
 				if (betEl) bet = betEl.innerText;
-				console.log({ bet });
-				const betNumber = Number(bet.split('₽')[0].replace(/\s/gi, ''));
+				const betNumber =
+					bet !== '0' ? Number(bet.split('₽')[0].replace(/\s/gi, '')) : 0;
 				if (xEl) {
 					x = xEl.innerText;
 					xNumber = Number(x.replace(/x/gi, ''));
