@@ -9,9 +9,9 @@ const getPlayerNames = async (page, players, callback) => {
 
 				let name = '0';
 				let bet = '0';
-				let x = '0';
+				let x = '-';
 				let xNumber = 0;
-				let betWin = '0';
+				let betWin = '-';
 
 				if (nameEl) name = nameEl.innerText;
 				if (betEl) bet = betEl.innerText;
