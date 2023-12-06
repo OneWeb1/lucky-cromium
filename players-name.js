@@ -22,7 +22,7 @@ const getPlayerNames = async (page, players, callback) => {
 					xNumber = Number(x.replace(/x/gi, ''));
 				}
 				if (winEl)
-					betWin = betNumber * xNumber === '0' ? '-' : betNumber * xNumber;
+					betWin = betNumber * xNumber === 0 ? '-' : betNumber * xNumber;
 
 				return {
 					name,
