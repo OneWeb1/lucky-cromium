@@ -74,6 +74,7 @@ const luckyParser = async () => {
 								betNumber: player.bet,
 								betString: player.betString,
 								x: player.x,
+								xNumber: player.xNumber,
 								betWin: player.betWin,
 								date: {
 									year: date.getFullYear(),
