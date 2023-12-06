@@ -34,7 +34,6 @@ const getPlayerNames = async (page, players, callback) => {
 				};
 			}, player);
 
-			// console.log(`Игрок №${index} ${gamer.name} ${gamer.bet} `);
 			callback(gamer, index);
 		}),
 	);
