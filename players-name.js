@@ -10,13 +10,17 @@ const getPlayerNames = async (page, players, callback) => {
 				let name = '0';
 				let bet = '0';
 				let x = '0';
+				let xNumber = 0;
 				let betWin = '0';
 
 				if (nameEl) name = nameEl.innerText;
 				if (betEl) bet = betEl.innerText;
 				const betNumber = Number(bet.split('.')[0].replace(/\D/gi, ''));
-				if (xEl) x = xEl.innerText;
-				if (winEl) betWin = winEl.innerText;
+				if (xEl) {
+					x = xEl.innerText;
+					xNumber = Number(x.replace(/x/gi, ''));
+				}
+				if (winEl) betWin = betNumber * xNumber;
 
 				return {
 					name,

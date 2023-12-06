@@ -76,6 +76,10 @@ const luckyParser = async () => {
 								x: player.x,
 								betWin: player.betWin,
 								date: {
+									year: date.getFullYear(),
+									month: date.getMonth(),
+									date: date.getDate(),
+									day: date.getDay(),
 									hours: date.getHours(),
 									minutes: date.getMinutes(),
 									seconds: date.getSeconds(),
