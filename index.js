@@ -162,8 +162,8 @@ const luckyParser = async () => {
 								coefficients.unshift(player.roundX);
 								console.log(player.roundX);
 								console.log({
-									hours: date.hours(),
-									minutes: date.minutes(),
+									hours: date.getHours(),
+									minutes: date.getMinutes(),
 									seconds: date.getSeconds(),
 								});
 								writeFile(coefficientsPath, JSON.stringify(coefficients));
