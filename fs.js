@@ -6,7 +6,7 @@ class FileSystem {
 	}
 
 	readFile(path, callback) {
-		fs.readFile(filePath, 'utf8', (err, data) => {
+		fs.readFile(path, 'utf8', (err, data) => {
 			if (err) {
 				console.error(`Ошибка чтения файла: ${err}`);
 				return;
@@ -20,7 +20,7 @@ class FileSystem {
 		});
 	}
 
-	writeFile(filePath, data) {
+	writeFile(path, data) {
 		if (!Array.isArray(this.date[filePath])) {
 			this.date[filePath] = [];
 		}
