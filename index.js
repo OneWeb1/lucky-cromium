@@ -158,7 +158,7 @@ const luckyParser = async () => {
 								});
 
 							if (index === 0) {
-								console.log(player.roundX);
+								coefficients.push(player.roundX);
 							}
 						},
 						// async coeff => {
