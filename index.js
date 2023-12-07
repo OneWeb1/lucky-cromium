@@ -164,3 +164,8 @@ app.listen(3003, () => {
 	luckyParser();
 	console.log('Сервер запущен на порту 3000');
 });
+
+/*Xvfb -ac :0 -screen 0 1280x1024x16 &
+export DISPLAY=:0
+
+pm2 start index.js --wait-ready --watch --ignore-watch="node_modules" --no-daemon*/
