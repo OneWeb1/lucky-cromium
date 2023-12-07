@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 //.
-const TelegramBot = require('./TelegramBot');
 const browser = require('./browser');
 const before = require('./before');
 const after = require('./after');
@@ -30,12 +29,12 @@ app.get('/', (req, res) => {
 	res.send('Working...');
 });
 
-// app.get('/players', (req, res) => {
-// 	readFile(playersPath, data => {
-// 		if (data) res.json(JSON.parse(data));
-// 		res.json({ message: 'Data not found' });
-// 	});
-// });
+app.get('/players', (req, res) => {
+	readFile(playersPath, data => {
+		if (data) res.json(JSON.parse(data));
+		res.json({ message: 'Data not found' });
+	});
+});
 
 app.get('/coefficients', (req, res) => {
 	fs.readFile(coefficientsPath, data => {
@@ -84,14 +83,14 @@ const luckyParser = async () => {
 					// 	console.log('Не удалось прочитать файл');
 					// }
 
-					// readFile(playersPath, data => {
-					// 	if (
-					// 		!Object.keys(data).length &&
-					// 		data &&
-					// 		Object.keys(JSON.parse(data)).length
-					// 	)
-					// 		p = { ...p, ...JSON.parse(data) };
-					// });
+					fs.readFile(playersPath, data => {
+						if (
+							!Object.keys(p).length &&
+							data &&
+							Object.keys(JSON.parse(data)).length
+						)
+							p = { ...JSON.parse(data) };
+					});
 
 					fs.readFile(coefficientsPath, data => {
 						if (!coefficients.length && data && JSON.parse(data).length) {
