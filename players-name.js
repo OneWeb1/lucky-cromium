@@ -29,6 +29,7 @@ const getPlayerNames = async (page, players, callback) => {
 					bet: betNumber,
 					betString: bet,
 					x,
+					roundX: `${document.querySelector('.sc-ksBlkl').innerText}x`,
 					xNumber,
 					betWin,
 				};

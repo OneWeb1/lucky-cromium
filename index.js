@@ -20,17 +20,58 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
-const p = {};
+let p = {};
+let coefficients = [];
+
+const playersPath = 'players.json';
+const coefficientsPath = 'coefficients.json';
+
+const readFile = (filePath, callback) => {
+	fs.readFile(filePath, 'utf8', (err, data) => {
+		if (err) {
+			console.error(`Ошибка чтения файла: ${err}`);
+			return;
+		}
+
+		try {
+			if (data) callback(data);
+		} catch (parseError) {
+			console.error('Ошибка парсинга JSON:', parseError);
+		}
+	});
+};
+
+const writeFile = (filePath, data) => {
+	fs.writeFile(filePath, data, 'utf8', err => {
+		if (err) {
+			console.error(`Ошибка записи файла: ${err}`);
+			return;
+		}
+
+		console.log('Данные успешно записаны в файл.');
+	});
+};
 
 app.get('/', (req, res) => {
 	res.send('Working...');
 });
 
 app.get('/players', (req, res) => {
-	res.json(p);
+	readFile(playersPath, data => {
+		if (data) res.json(JSON.parse(data));
+		res.json('Data not found');
+	});
+});
+
+app.get('/coefficients', (req, res) => {
+	readFile(coefficientsPath, data => {
+		if (data) res.json(JSON.parse(data));
+		res.json('Data not found');
+	});
 });
 
 let isLockInterval = false;
+let isLockAdd = false;
 let roundNumber = 0;
 
 const luckyParser = async () => {
@@ -54,46 +95,61 @@ const luckyParser = async () => {
 			if (!isLockInterval) {
 				try {
 					isLockInterval = true;
+					isLockAdd = true;
 					await before.roundStarted(page, betButtons);
 					roundNumber++;
 
 					if (roundNumber >= 100) throw new Error('Reload');
 
-					await after.roundEnd(page, player => {
-						const name = player.name;
-						const date = new Date();
-						if (!p[name] && player.name.length >= 3) {
-							p[name] = {
-								avatar: randomRGBA(),
-								name,
-								games: [],
-							};
-						}
-						if (p[name])
-							p[name].games.push({
-								betNumber: player.bet,
-								betString: player.betString,
-								x: player.x,
-								xNumber: player.xNumber,
-								betWin: player.betWin,
-								date: {
-									year: date.getFullYear(),
-									month: date.getMonth(),
-									date: date.getDate(),
-									day: date.getDay(),
-									hours: date.getHours(),
-									minutes: date.getMinutes(),
-									seconds: date.getSeconds(),
-								},
-							});
+					readFile(playersPath, data => {
+						if (data) p = { ...p, ...JSON.parse(data) };
 					});
-					// fs.writeFile('players.json', JSON.stringify(p), err => {
-					// 	if (err) {
-					// 		console.error('Error writing to file:', err);
-					// 	} else {
-					// 		console.log('Data written to file successfully.');
-					// 	}
-					// });
+					readFile(coefficientsPath, data => {
+						if (data) coefficients = [...JSON.parse(data)];
+					});
+
+					await after.roundEnd(
+						page,
+						(player, index, length) => {
+							const name = player.name;
+							const date = new Date();
+
+							if (!p[name] && player.name.length >= 3) {
+								p[name] = {
+									avatar: randomRGBA(),
+									name,
+									games: [],
+								};
+							}
+							if (p[name])
+								p[name].games.push({
+									betNumber: player.bet,
+									betString: player.betString,
+									x: player.x,
+									xNumber: player.xNumber,
+									roundX: player.roundX,
+									betWin: player.betWin,
+									date: {
+										year: date.getFullYear(),
+										month: date.getMonth(),
+										date: date.getDate(),
+										day: date.getDay(),
+										hours: date.getHours(),
+										minutes: date.getMinutes(),
+										seconds: date.getSeconds(),
+									},
+								});
+						},
+						async coeff => {
+							if (coeff && isLockAdd) {
+								const text = await page.evaluate(el => el.innerText, coeff);
+								coefficients.push(text);
+								isLockAdd = false;
+							}
+						},
+					);
+					writeFile(playersPath, JSON.stringify(p));
+					writeFile(coefficientsPath, JSON.stringify(coefficients));
 
 					isLockInterval = false;
 				} catch (e) {
