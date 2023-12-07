@@ -29,14 +29,14 @@ const coefficientsPath = 'coefficients.json';
 const readFile = (filePath, callback) => {
 	fs.readFile(filePath, 'utf8', (err, data) => {
 		if (err) {
-			console.error(`Ошибка чтения файла: ${err}`);
+			// console.error(`Ошибка чтения файла: ${err}`);
 			return;
 		}
 
 		try {
 			if (data) callback(data);
 		} catch (parseError) {
-			console.error('Ошибка парсинга JSON:', parseError);
+			// console.error('Ошибка парсинга JSON:', parseError);
 		}
 	});
 };
@@ -44,11 +44,11 @@ const readFile = (filePath, callback) => {
 const writeFile = (filePath, data) => {
 	fs.writeFile(filePath, data, 'utf8', err => {
 		if (err) {
-			console.error(`Ошибка записи файла: ${err}`);
+			// console.error(`Ошибка записи файла: ${err}`);
 			return;
 		}
 
-		console.log('Данные успешно записаны в файл.');
+		// console.log('Данные успешно записаны в файл.');
 	});
 };
 
@@ -56,12 +56,12 @@ app.get('/', (req, res) => {
 	res.send('Working...');
 });
 
-// app.get('/players', (req, res) => {
-// 	readFile(playersPath, data => {
-// 		if (data) res.json(JSON.parse(data));
-// 		res.json({ message: 'Data not found' });
-// 	});
-// });
+app.get('/players', (req, res) => {
+	readFile(playersPath, data => {
+		if (data) res.json(JSON.parse(data));
+		res.json({ message: 'Data not found' });
+	});
+});
 
 app.get('/coefficients', (req, res) => {
 	readFile(coefficientsPath, data => {
@@ -118,12 +118,12 @@ const luckyParser = async () => {
 					// 	)
 					// 		p = { ...p, ...JSON.parse(data) };
 					// });
-					// readFile(coefficientsPath, data => {
-					// 	if (!coefficients.length && data && JSON.parse(data).length) {
-					// 		coefficients = [...JSON.parse(data)];
-					// 	}
-					// 	console.log(coefficients);
-					// });
+					readFile(coefficientsPath, data => {
+						if (!coefficients.length && data && JSON.parse(data).length) {
+							coefficients = [...JSON.parse(data)];
+						}
+						console.log(coefficients);
+					});
 
 					await after.roundEnd(
 						page,
@@ -158,8 +158,14 @@ const luckyParser = async () => {
 								});
 
 							if (index === 0) {
+								const date = new Date();
 								coefficients.unshift(player.roundX);
 								console.log(player.roundX);
+								console.log({
+									hours: date.hours,
+									minutes: date.minutes,
+									seconds: date.getSeconds(),
+								});
 								writeFile(coefficientsPath, JSON.stringify(coefficients));
 							}
 						},
