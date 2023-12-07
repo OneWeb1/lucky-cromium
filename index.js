@@ -107,6 +107,7 @@ const luckyParser = async () => {
 							coefficients = [...JSON.parse(data)];
 						}
 					} catch (e) {
+						writeFile(coefficientsPath, JSON.stringify([]));
 						console.log('Не удалось прочитать файл');
 					}
 
@@ -158,7 +159,8 @@ const luckyParser = async () => {
 								});
 
 							if (index === 0) {
-								coefficients.push(player.roundX);
+								coefficients.unshift(player.roundX);
+								writeFile(coefficientsPath, JSON.stringify(coefficients));
 							}
 						},
 						// async coeff => {
@@ -170,7 +172,6 @@ const luckyParser = async () => {
 						// },
 					);
 					// writeFile(playersPath, JSON.stringify(p));
-					writeFile(coefficientsPath, JSON.stringify(coefficients));
 
 					isLockInterval = false;
 				} catch (e) {
