@@ -35,8 +35,9 @@ class FileSystem {
 
 			this.date[path].push(new Date());
 			setTimeout(() => {
+				console.log('Blocked unlock');
 				this.date[path] = [];
-			}, 5000);
+			}, 8000);
 			console.log('Данные успешно записаны в файл.');
 		});
 	}
