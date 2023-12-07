@@ -105,8 +105,10 @@ const luckyParser = async () => {
 						if (data) p = { ...p, ...JSON.parse(data) };
 					});
 					readFile(coefficientsPath, data => {
-						if (data && coefficients.length <= 1)
-							coefficients = [...coefficients, ...JSON.parse(data)];
+						if (!coefficients.length && data && JSON.parse(data).length) {
+							coefficients = [...JSON.parse(data)];
+						}
+						console.log(coefficients);
 					});
 
 					await after.roundEnd(
