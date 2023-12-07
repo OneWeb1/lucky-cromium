@@ -1,11 +1,11 @@
 const express = require('express');
 const cors = require('cors');
-const fs = require('fs');
 //.
 const TelegramBot = require('./TelegramBot');
 const browser = require('./browser');
 const before = require('./before');
 const after = require('./after');
+const fs = require('./fs');
 const utils = require('./utils');
 
 const url =
@@ -26,32 +26,6 @@ let coefficients = [];
 const playersPath = 'players.json';
 const coefficientsPath = 'coefficients.json';
 
-const readFile = (filePath, callback) => {
-	fs.readFile(filePath, 'utf8', (err, data) => {
-		if (err) {
-			console.error(`Ошибка чтения файла: ${err}`);
-			return;
-		}
-
-		try {
-			if (data) callback(data);
-		} catch (parseError) {
-			console.error('Ошибка парсинга JSON:', parseError);
-		}
-	});
-};
-
-const writeFile = (filePath, data) => {
-	fs.writeFile(filePath, data, 'utf8', err => {
-		if (err) {
-			console.error(`Ошибка записи файла: ${err}`);
-			return;
-		}
-
-		console.log('Данные успешно записаны в файл.');
-	});
-};
-
 app.get('/', (req, res) => {
 	res.send('Working...');
 });
@@ -64,7 +38,7 @@ app.get('/', (req, res) => {
 // });
 
 app.get('/coefficients', (req, res) => {
-	readFile(coefficientsPath, data => {
+	fs.readFile(coefficientsPath, data => {
 		if (data) res.json(JSON.parse(data));
 		res.json({ message: 'Data not found' });
 	});
@@ -118,7 +92,7 @@ const luckyParser = async () => {
 					// 	)
 					// 		p = { ...p, ...JSON.parse(data) };
 					// });
-					readFile(coefficientsPath, data => {
+					fs.readFile(coefficientsPath, data => {
 						if (!coefficients.length && data && JSON.parse(data).length) {
 							coefficients = [...JSON.parse(data)];
 						}
@@ -159,7 +133,7 @@ const luckyParser = async () => {
 							if (index === 0) {
 								coefficients.unshift(player.roundX);
 								console.log(player.roundX);
-								writeFile(coefficientsPath, JSON.stringify(coefficients));
+								fs.writeFile(coefficientsPath, JSON.stringify(coefficients));
 							}
 						},
 						// async coeff => {
