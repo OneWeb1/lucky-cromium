@@ -1,10 +1,11 @@
 const express = require('express');
 const cors = require('cors');
+const fs = require('fs');
 //.
+const TelegramBot = require('./TelegramBot');
 const browser = require('./browser');
 const before = require('./before');
 const after = require('./after');
-const fs = require('./fs');
 const utils = require('./utils');
 
 const url =
@@ -25,19 +26,45 @@ let coefficients = [];
 const playersPath = 'players.json';
 const coefficientsPath = 'coefficients.json';
 
+const readFile = (filePath, callback) => {
+	fs.readFile(filePath, 'utf8', (err, data) => {
+		if (err) {
+			console.error(`Ошибка чтения файла: ${err}`);
+			return;
+		}
+
+		try {
+			if (data) callback(data);
+		} catch (parseError) {
+			console.error('Ошибка парсинга JSON:', parseError);
+		}
+	});
+};
+
+const writeFile = (filePath, data) => {
+	fs.writeFile(filePath, data, 'utf8', err => {
+		if (err) {
+			console.error(`Ошибка записи файла: ${err}`);
+			return;
+		}
+
+		console.log('Данные успешно записаны в файл.');
+	});
+};
+
 app.get('/', (req, res) => {
 	res.send('Working...');
 });
 
-app.get('/players', (req, res) => {
-	readFile(playersPath, data => {
-		if (data) res.json(JSON.parse(data));
-		res.json({ message: 'Data not found' });
-	});
-});
+// app.get('/players', (req, res) => {
+// 	readFile(playersPath, data => {
+// 		if (data) res.json(JSON.parse(data));
+// 		res.json({ message: 'Data not found' });
+// 	});
+// });
 
 app.get('/coefficients', (req, res) => {
-	fs.readFile(coefficientsPath, data => {
+	readFile(coefficientsPath, data => {
 		if (data) res.json(JSON.parse(data));
 		res.json({ message: 'Data not found' });
 	});
@@ -74,29 +101,29 @@ const luckyParser = async () => {
 
 					if (roundNumber >= 100) throw new Error('Reload');
 
-					// try {
-					// 	const data = fs.readdirSync(coefficientsPath, 'utf-8');
-					// 	if (!coefficients.length && JSON.parse(data).length) {
-					// 		coefficients = [...JSON.parse(data)];
-					// 	}
-					// } catch (e) {
-					// 	console.log('Не удалось прочитать файл');
-					// }
-
-					fs.readFile(playersPath, data => {
-						if (
-							!Object.keys(p).length &&
-							data &&
-							Object.keys(JSON.parse(data)).length
-						)
-							p = { ...JSON.parse(data) };
-					});
-
-					fs.readFile(coefficientsPath, data => {
-						if (!coefficients.length && data && JSON.parse(data).length) {
+					try {
+						const data = fs.readdirSync(coefficientsPath, 'utf-8');
+						if (!coefficients.length && JSON.parse(data).length) {
 							coefficients = [...JSON.parse(data)];
 						}
-					});
+					} catch (e) {
+						console.log('Не удалось прочитать файл');
+					}
+
+					// readFile(playersPath, data => {
+					// 	if (
+					// 		!Object.keys(data).length &&
+					// 		data &&
+					// 		Object.keys(JSON.parse(data)).length
+					// 	)
+					// 		p = { ...p, ...JSON.parse(data) };
+					// });
+					// readFile(coefficientsPath, data => {
+					// 	if (!coefficients.length && data && JSON.parse(data).length) {
+					// 		coefficients = [...JSON.parse(data)];
+					// 	}
+					// 	console.log(coefficients);
+					// });
 
 					await after.roundEnd(
 						page,
@@ -133,7 +160,7 @@ const luckyParser = async () => {
 							if (index === 0) {
 								coefficients.unshift(player.roundX);
 								console.log(player.roundX);
-								fs.writeFile(coefficientsPath, JSON.stringify(coefficients));
+								writeFile(coefficientsPath, JSON.stringify(coefficients));
 							}
 						},
 						// async coeff => {
@@ -144,7 +171,7 @@ const luckyParser = async () => {
 						// 	}
 						// },
 					);
-					fs.writeFile(playersPath, JSON.stringify(p));
+					// writeFile(playersPath, JSON.stringify(p));
 
 					isLockInterval = false;
 				} catch (e) {
@@ -164,8 +191,3 @@ app.listen(3003, () => {
 	luckyParser();
 	console.log('Сервер запущен на порту 3000');
 });
-
-/*Xvfb -ac :0 -screen 0 1280x1024x16 &
-export DISPLAY=:0
-
-pm2 start index.js --wait-ready --watch --ignore-watch="node_modules" --no-daemon*/
