@@ -156,14 +156,18 @@ const luckyParser = async () => {
 										seconds: date.getSeconds(),
 									},
 								});
-						},
-						async coeff => {
-							if (coeff && isLockAdd) {
-								const text = await page.evaluate(el => el.innerText, coeff);
-								coefficients.push(text);
-								isLockAdd = false;
+
+							if (index === 0) {
+								console.log(player.roundX);
 							}
 						},
+						// async coeff => {
+						// 	if (coeff && isLockAdd) {
+						// 		const text = await page.evaluate(el => el.innerText, coeff);
+						// 		coefficients.push(text);
+						// 		isLockAdd = false;
+						// 	}
+						// },
 					);
 					// writeFile(playersPath, JSON.stringify(p));
 					writeFile(coefficientsPath, JSON.stringify(coefficients));
