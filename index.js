@@ -107,7 +107,6 @@ const luckyParser = async () => {
 							coefficients = [...JSON.parse(data)];
 						}
 					} catch (e) {
-						writeFile(coefficientsPath, JSON.stringify([]));
 						console.log('Не удалось прочитать файл');
 					}
 
