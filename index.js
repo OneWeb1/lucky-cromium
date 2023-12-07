@@ -102,7 +102,12 @@ const luckyParser = async () => {
 					if (roundNumber >= 100) throw new Error('Reload');
 
 					readFile(playersPath, data => {
-						if (data) p = { ...p, ...JSON.parse(data) };
+						if (
+							!Object.keys(data).length &&
+							data &&
+							Object.keys(JSON.parse(data)).length
+						)
+							p = { ...p, ...JSON.parse(data) };
 					});
 					readFile(coefficientsPath, data => {
 						if (!coefficients.length && data && JSON.parse(data).length) {
