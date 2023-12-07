@@ -22,20 +22,20 @@ class FileSystem {
 
 	writeFile(path, data) {
 		if (!Array.isArray(this.date[filePath])) {
-			this.date[filePath] = [];
+			this.date[path] = [];
 		}
 
-		if (this.date[filePath].length) return;
+		if (this.date[path].length) return;
 
-		fs.writeFile(filePath, data, 'utf8', err => {
+		fs.writeFile(path, data, 'utf8', err => {
 			if (err) {
 				console.error(`Ошибка записи файла: ${err}`);
 				return;
 			}
 
-			this.date[filePath].push(new Date());
+			this.date[path].push(new Date());
 			setTimeout(() => {
-				this.date[filePath] = [];
+				this.date[path] = [];
 			}, 3000);
 			console.log('Данные успешно записаны в файл.');
 		});
