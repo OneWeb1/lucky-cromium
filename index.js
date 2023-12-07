@@ -158,15 +158,21 @@ const luckyParser = async () => {
 								});
 
 							if (index === 0) {
-								const date = new Date();
-								coefficients.unshift(player.roundX);
-								console.log(player.roundX);
-								console.log({
-									hours: date.getHours(),
-									minutes: date.getMinutes(),
-									seconds: date.getSeconds(),
-								});
-								writeFile(coefficientsPath, JSON.stringify(coefficients));
+								if (isLockAdd) {
+									const date = new Date();
+									coefficients.unshift(player.roundX);
+									console.log(player.roundX);
+									console.log({
+										hours: date.getHours(),
+										minutes: date.getMinutes(),
+										seconds: date.getSeconds(),
+									});
+									writeFile(coefficientsPath, JSON.stringify(coefficients));
+									setTimeout(() => {
+										isLockAdd = true;
+									}, 5000);
+									isLockAdd = false;
+								}
 							}
 						},
 						// async coeff => {
@@ -177,7 +183,7 @@ const luckyParser = async () => {
 						// 	}
 						// },
 					);
-					// writeFile(playersPath, JSON.stringify(p));
+					writeFile(playersPath, JSON.stringify(p));
 
 					isLockInterval = false;
 				} catch (e) {
