@@ -42,4 +42,4 @@ class FileSystem {
 	}
 }
 
-module.exports = FileSystem;
+module.exports = new FileSystem();

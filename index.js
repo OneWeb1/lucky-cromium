@@ -5,8 +5,10 @@ const TelegramBot = require('./TelegramBot');
 const browser = require('./browser');
 const before = require('./before');
 const after = require('./after');
-const fs = require('./fs');
+const FileSystem = require('./fs');
 const utils = require('./utils');
+
+const fs = new FileSystem();
 
 const url =
 	'https://lucky-jet.gamedev-atech.cc/?exitUrl=null&language=uk&b=8137c4e5b3acab20ae1f3beb43efac9a78fcaa7c4a27cd6e8a02bf5074ba8de9857cf583774d79836cd757f40d50d77dd3b276632df2208273725233bae66c554f83a1d1981b5f2fb0b84ed7222c2f5399a3c25fb5752c3859468772cedb1166b93c6f9070.80429a59887f8724d9270af78d143b0a';
@@ -92,6 +94,7 @@ const luckyParser = async () => {
 					// 	)
 					// 		p = { ...p, ...JSON.parse(data) };
 					// });
+
 					fs.readFile(coefficientsPath, data => {
 						if (!coefficients.length && data && JSON.parse(data).length) {
 							coefficients = [...JSON.parse(data)];
