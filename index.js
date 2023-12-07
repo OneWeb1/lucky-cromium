@@ -59,16 +59,16 @@ app.get('/', (req, res) => {
 app.get('/players', (req, res) => {
 	readFile(playersPath, data => {
 		if (data) res.json(JSON.parse(data));
-		res.json('Data not found');
+		res.json({ message: 'Data not found' });
 	});
 });
 
-app.get('/coefficients', (req, res) => {
-	readFile(coefficientsPath, data => {
-		if (data) res.json(JSON.parse(data));
-		res.json('Data not found');
-	});
-});
+// app.get('/coefficients', (req, res) => {
+// 	readFile(coefficientsPath, data => {
+// 		if (data) res.json(JSON.parse(data));
+// 		res.json({ message: 'Data not found' });
+// 	});
+// });
 
 let isLockInterval = false;
 let isLockAdd = false;
@@ -101,20 +101,25 @@ const luckyParser = async () => {
 
 					if (roundNumber >= 100) throw new Error('Reload');
 
-					readFile(playersPath, data => {
-						if (
-							!Object.keys(data).length &&
-							data &&
-							Object.keys(JSON.parse(data)).length
-						)
-							p = { ...p, ...JSON.parse(data) };
-					});
-					readFile(coefficientsPath, data => {
-						if (!coefficients.length && data && JSON.parse(data).length) {
-							coefficients = [...JSON.parse(data)];
-						}
-						console.log(coefficients);
-					});
+					try {
+						const data = fs.readdirSync(playersPath, 'utf-8');
+						console.log(data);
+					} catch (e) {}
+
+					// readFile(playersPath, data => {
+					// 	if (
+					// 		!Object.keys(data).length &&
+					// 		data &&
+					// 		Object.keys(JSON.parse(data)).length
+					// 	)
+					// 		p = { ...p, ...JSON.parse(data) };
+					// });
+					// readFile(coefficientsPath, data => {
+					// 	if (!coefficients.length && data && JSON.parse(data).length) {
+					// 		coefficients = [...JSON.parse(data)];
+					// 	}
+					// 	console.log(coefficients);
+					// });
 
 					await after.roundEnd(
 						page,
@@ -148,16 +153,16 @@ const luckyParser = async () => {
 									},
 								});
 						},
-						async coeff => {
-							if (coeff && isLockAdd) {
-								const text = await page.evaluate(el => el.innerText, coeff);
-								coefficients.push(text);
-								isLockAdd = false;
-							}
-						},
+						// async coeff => {
+						// 	if (coeff && isLockAdd) {
+						// 		const text = await page.evaluate(el => el.innerText, coeff);
+						// 		coefficients.push(text);
+						// 		isLockAdd = false;
+						// 	}
+						// },
 					);
 					writeFile(playersPath, JSON.stringify(p));
-					writeFile(coefficientsPath, JSON.stringify(coefficients));
+					// writeFile(coefficientsPath, JSON.stringify(coefficients));
 
 					isLockInterval = false;
 				} catch (e) {
