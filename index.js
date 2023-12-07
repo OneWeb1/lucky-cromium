@@ -144,7 +144,7 @@ const luckyParser = async () => {
 						// 	}
 						// },
 					);
-					writeFile(playersPath, JSON.stringify(p));
+					fs.writeFile(playersPath, JSON.stringify(p));
 
 					isLockInterval = false;
 				} catch (e) {
