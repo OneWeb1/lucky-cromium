@@ -41,5 +41,5 @@ class FileSystem {
 		});
 	}
 }
-
-module.exports = new FileSystem();
+const fs = new FileSystem();
+module.exports = fs;

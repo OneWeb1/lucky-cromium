@@ -5,7 +5,7 @@ const TelegramBot = require('./TelegramBot');
 const browser = require('./browser');
 const before = require('./before');
 const after = require('./after');
-const FileSystem = require('./fs');
+const fs = require('./fs');
 const utils = require('./utils');
 
 const fs = new FileSystem();
