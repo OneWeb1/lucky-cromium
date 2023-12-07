@@ -21,7 +21,7 @@ class FileSystem {
 	}
 
 	writeFile(path, data) {
-		if (!Array.isArray(this.date[filePath])) {
+		if (!Array.isArray(this.date[path])) {
 			this.date[path] = [];
 		}
 
