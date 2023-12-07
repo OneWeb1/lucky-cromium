@@ -101,14 +101,14 @@ const luckyParser = async () => {
 
 					if (roundNumber >= 100) throw new Error('Reload');
 
-					try {
-						const data = fs.readdirSync(coefficientsPath, 'utf-8');
-						if (!coefficients.length && JSON.parse(data).length) {
-							coefficients = [...JSON.parse(data)];
-						}
-					} catch (e) {
-						console.log('Не удалось прочитать файл');
-					}
+					// try {
+					// 	const data = fs.readdirSync(coefficientsPath, 'utf-8');
+					// 	if (!coefficients.length && JSON.parse(data).length) {
+					// 		coefficients = [...JSON.parse(data)];
+					// 	}
+					// } catch (e) {
+					// 	console.log('Не удалось прочитать файл');
+					// }
 
 					// readFile(playersPath, data => {
 					// 	if (
@@ -118,12 +118,11 @@ const luckyParser = async () => {
 					// 	)
 					// 		p = { ...p, ...JSON.parse(data) };
 					// });
-					// readFile(coefficientsPath, data => {
-					// 	if (!coefficients.length && data && JSON.parse(data).length) {
-					// 		coefficients = [...JSON.parse(data)];
-					// 	}
-					// 	console.log(coefficients);
-					// });
+					readFile(coefficientsPath, data => {
+						if (!coefficients.length && data && JSON.parse(data).length) {
+							coefficients = [...JSON.parse(data)];
+						}
+					});
 
 					await after.roundEnd(
 						page,
