@@ -36,7 +36,7 @@ class FileSystem {
 			this.date[path].push(new Date());
 			setTimeout(() => {
 				this.date[path] = [];
-			}, 3000);
+			}, 5000);
 			console.log('Данные успешно записаны в файл.');
 		});
 	}
