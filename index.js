@@ -56,19 +56,19 @@ app.get('/', (req, res) => {
 	res.send('Working...');
 });
 
-app.get('/players', (req, res) => {
-	readFile(playersPath, data => {
-		if (data) res.json(JSON.parse(data));
-		res.json({ message: 'Data not found' });
-	});
-});
-
-// app.get('/coefficients', (req, res) => {
-// 	readFile(coefficientsPath, data => {
+// app.get('/players', (req, res) => {
+// 	readFile(playersPath, data => {
 // 		if (data) res.json(JSON.parse(data));
 // 		res.json({ message: 'Data not found' });
 // 	});
 // });
+
+app.get('/coefficients', (req, res) => {
+	readFile(coefficientsPath, data => {
+		if (data) res.json(JSON.parse(data));
+		res.json({ message: 'Data not found' });
+	});
+});
 
 let isLockInterval = false;
 let isLockAdd = false;
@@ -102,9 +102,13 @@ const luckyParser = async () => {
 					if (roundNumber >= 100) throw new Error('Reload');
 
 					try {
-						const data = fs.readdirSync(playersPath, 'utf-8');
-						console.log(data);
-					} catch (e) {}
+						const data = fs.readdirSync(coefficientsPath, 'utf-8');
+						if (!coefficients.length && JSON.parse(data).length) {
+							coefficients = [...JSON.parse(data)];
+						}
+					} catch (e) {
+						console.log('Не удалось прочитать файл');
+					}
 
 					// readFile(playersPath, data => {
 					// 	if (
@@ -153,16 +157,16 @@ const luckyParser = async () => {
 									},
 								});
 						},
-						// async coeff => {
-						// 	if (coeff && isLockAdd) {
-						// 		const text = await page.evaluate(el => el.innerText, coeff);
-						// 		coefficients.push(text);
-						// 		isLockAdd = false;
-						// 	}
-						// },
+						async coeff => {
+							if (coeff && isLockAdd) {
+								const text = await page.evaluate(el => el.innerText, coeff);
+								coefficients.push(text);
+								isLockAdd = false;
+							}
+						},
 					);
-					writeFile(playersPath, JSON.stringify(p));
-					// writeFile(coefficientsPath, JSON.stringify(coefficients));
+					// writeFile(playersPath, JSON.stringify(p));
+					writeFile(coefficientsPath, JSON.stringify(coefficients));
 
 					isLockInterval = false;
 				} catch (e) {
