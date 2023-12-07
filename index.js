@@ -159,6 +159,7 @@ const luckyParser = async () => {
 
 							if (index === 0) {
 								coefficients.unshift(player.roundX);
+								console.log(player.roundX);
 								writeFile(coefficientsPath, JSON.stringify(coefficients));
 							}
 						},
