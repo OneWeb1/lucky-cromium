@@ -112,11 +112,8 @@ const luckyParser = async () => {
 
 					try {
 						const data = fs.readFileSync(playersPath, 'utf-8');
-						const obj = data || {};
-						console.log(Object.keys(JSON.parse(obj)));
 						if (!Object.keys(p).length && data && JSON.parse(data)) {
-							//p = [...JSON.parse(data)];
-							console.log(p);
+							p = JSON.parse(data);
 						}
 					} catch (e) {
 						console.log(e);
@@ -176,7 +173,6 @@ const luckyParser = async () => {
 						// 	}
 						// },
 					);
-					console.log('p', p);
 					writeFile(playersPath, JSON.stringify(p));
 
 					isLockInterval = false;
