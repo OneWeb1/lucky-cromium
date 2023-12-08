@@ -42,7 +42,7 @@ const readFile = (filePath, callback) => {
 };
 
 const writeFile = (filePath, data) => {
-	fs.writeFile(filePath, data, 'utf8', err => {
+	fs.writeFileSync(filePath, data, 'utf8', err => {
 		if (err) {
 			// console.error(`Ошибка записи файла: ${err}`);
 			return;
@@ -111,7 +111,6 @@ const luckyParser = async () => {
 					}
 
 					readFile(playersPath, data => {
-						console.log(data);
 						if (
 							!Object.keys(p).length &&
 							data &&
