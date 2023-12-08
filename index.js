@@ -112,9 +112,10 @@ const luckyParser = async () => {
 
 					try {
 						const data = fs.readFileSync(playersPath, 'utf-8');
-						console.log(JSON.parse(data));
+						const obj = data || {};
+						console.log(Object.keys(JSON.parse(obj)));
 						if (!Object.keys(p).length && data && JSON.parse(data)) {
-							p = [...JSON.parse(data)];
+							//p = [...JSON.parse(data)];
 							console.log(p);
 						}
 					} catch (e) {
