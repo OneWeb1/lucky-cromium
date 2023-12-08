@@ -27,29 +27,12 @@ const playersPath = 'players.json';
 const coefficientsPath = 'coefficients.json';
 
 const readFile = (filePath, callback) => {
-	fs.readFileSync(filePath, 'utf8', (err, data) => {
-		if (err) {
-			// console.error(`Ошибка чтения файла: ${err}`);
-			return;
-		}
-
-		try {
-			if (data) callback(data);
-		} catch (parseError) {
-			// console.error('Ошибка парсинга JSON:', parseError);
-		}
-	});
+	const data = fs.readFileSync(filePath, 'utf8');
+	callback(data);
 };
 
 const writeFile = (filePath, data) => {
-	fs.writeFileSync(filePath, data, 'utf8', err => {
-		if (err) {
-			// console.error(`Ошибка записи файла: ${err}`);
-			return;
-		}
-
-		// console.log('Данные успешно записаны в файл.');
-	});
+	fs.writeFileSync(filePath, data, 'utf8');
 };
 
 app.get('/', (req, res) => {
