@@ -27,7 +27,7 @@ const playersPath = 'players.json';
 const coefficientsPath = 'coefficients.json';
 
 const readFile = (filePath, callback) => {
-	fs.readFile(filePath, 'utf8', (err, data) => {
+	fs.readFileSync(filePath, 'utf8', (err, data) => {
 		if (err) {
 			// console.error(`Ошибка чтения файла: ${err}`);
 			return;
@@ -107,25 +107,20 @@ const luckyParser = async () => {
 							coefficients = [...JSON.parse(data)];
 						}
 					} catch (e) {
-						console.log('Не удалось прочитать файл');
+						// console.log(`Не удалось прочитать файл ${coefficientsPath}`);
 					}
 
-					readFile(playersPath, data => {
+					try {
+						const data = fs.readdirSync(playersPath, 'utf-8');
 						if (
 							!Object.keys(p).length &&
-							data &&
-							!Object.keys(JSON.parse(data)).length
+							JSON.parse(Object.keys(data)).length
 						) {
-							p = { ...JSON.parse(data) };
-							console.log(data);
-							console.log(p);
+							p = [...JSON.parse(data)];
 						}
-					});
-					readFile(coefficientsPath, data => {
-						if (!coefficients.length && data && JSON.parse(data).length) {
-							coefficients = [...JSON.parse(data)];
-						}
-					});
+					} catch (e) {
+						console.log(`Не удалось прочитать файл ${playersPath}`);
+					}
 
 					await after.roundEnd(
 						page,
