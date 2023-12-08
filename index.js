@@ -111,6 +111,7 @@ const luckyParser = async () => {
 					}
 
 					readFile(playersPath, data => {
+						console.log(data);
 						if (
 							!Object.keys(data).length &&
 							data &&
@@ -162,11 +163,7 @@ const luckyParser = async () => {
 								if (isLockAdd) {
 									const date = new Date();
 									coefficients.unshift(player.roundX);
-									console.log({
-										hours: date.getHours(),
-										minutes: date.getMinutes(),
-										seconds: date.getSeconds(),
-									});
+
 									writeFile(coefficientsPath, JSON.stringify(coefficients));
 									setTimeout(() => {
 										isLockAdd = true;
