@@ -110,14 +110,15 @@ const luckyParser = async () => {
 						console.log('Не удалось прочитать файл');
 					}
 
-					// readFile(playersPath, data => {
-					// 	if (
-					// 		!Object.keys(data).length &&
-					// 		data &&
-					// 		Object.keys(JSON.parse(data)).length
-					// 	)
-					// 		p = { ...p, ...JSON.parse(data) };
-					// });
+					readFile(playersPath, data => {
+						if (
+							!Object.keys(data).length &&
+							data &&
+							Object.keys(JSON.parse(data)).length
+						)
+							console.log(Object.keys(data).length, data);
+						p = { ...JSON.parse(data) };
+					});
 					readFile(coefficientsPath, data => {
 						if (!coefficients.length && data && JSON.parse(data).length) {
 							coefficients = [...JSON.parse(data)];
@@ -161,7 +162,6 @@ const luckyParser = async () => {
 								if (isLockAdd) {
 									const date = new Date();
 									coefficients.unshift(player.roundX);
-									console.log(player.roundX);
 									console.log({
 										hours: date.getHours(),
 										minutes: date.getMinutes(),
