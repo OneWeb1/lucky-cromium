@@ -112,6 +112,7 @@ const luckyParser = async () => {
 
 					try {
 						const data = fs.readdirSync(playersPath, 'utf-8');
+						console.log(data);
 						if (
 							!Object.keys(p).length &&
 							JSON.parse(Object.keys(data)).length
