@@ -117,8 +117,9 @@ const luckyParser = async () => {
 							Object.keys(JSON.parse(data)).length
 						) {
 							p = { ...JSON.parse(data) };
+							console.log(data);
+							console.log(p);
 						}
-						console.log(p);
 					});
 					readFile(coefficientsPath, data => {
 						if (!coefficients.length && data && JSON.parse(data).length) {
