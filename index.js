@@ -59,14 +59,14 @@ app.get('/', (req, res) => {
 app.get('/players', (req, res) => {
 	readFile(playersPath, data => {
 		if (data) res.json(JSON.parse(data));
-		res.json({ message: 'Data not found' });
+		else res.json({ message: 'Data not found' });
 	});
 });
 
 app.get('/coefficients', (req, res) => {
 	readFile(coefficientsPath, data => {
 		if (data) res.json(JSON.parse(data));
-		res.json({ message: 'Data not found' });
+		else res.json({ message: 'Data not found' });
 	});
 });
 
@@ -101,24 +101,36 @@ const luckyParser = async () => {
 
 					if (roundNumber >= 100) throw new Error('Reload');
 
-					try {
-						const data = fs.readFileSync(coefficientsPath, 'utf-8');
-						if (!coefficients.length && JSON.parse(data).length) {
-							coefficients = [...JSON.parse(data)];
-						}
-					} catch (e) {
-						// console.log(`Не удалось прочитать файл ${coefficientsPath}`);
-					}
+					// try {
+					// 	const data = fs.readFileSync(coefficientsPath, 'utf-8');
+					// 	if (!coefficients.length && JSON.parse(data).length) {
+					// 		coefficients = [...JSON.parse(data)];
+					// 	}
+					// } catch (e) {
+					// 	// console.log(`Не удалось прочитать файл ${coefficientsPath}`);
+					// }
 
-					try {
-						const data = fs.readFileSync(playersPath, 'utf-8');
+					readFile(playersPath, data => {
 						if (!Object.keys(p).length && data && JSON.parse(data)) {
 							p = JSON.parse(data);
 						}
-					} catch (e) {
-						console.log(e);
-						console.log(`Не удалось прочитать файл ${playersPath}`);
-					}
+					});
+
+					readFile(coefficientsPath, data => {
+						if (!coefficients.length && JSON.parse(data).length) {
+							coefficients = [...JSON.parse(data)];
+						}
+					});
+
+					// try {
+					// 	const data = fs.readFileSync(playersPath, 'utf-8');
+					// 	if (!Object.keys(p).length && data && JSON.parse(data)) {
+					// 		p = JSON.parse(data);
+					// 	}
+					// } catch (e) {
+					// 	console.log(e);
+					// 	console.log(`Не удалось прочитать файл ${playersPath}`);
+					// }
 
 					await after.roundEnd(
 						page,
