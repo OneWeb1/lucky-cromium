@@ -111,7 +111,6 @@ const luckyParser = async () => {
 					}
 
 					readFile(playersPath, data => {
-						console.log(data);
 						if (
 							!Object.keys(data).length &&
 							data &&
@@ -119,12 +118,12 @@ const luckyParser = async () => {
 						) {
 							p = { ...JSON.parse(data) };
 						}
+						console.log(p);
 					});
 					readFile(coefficientsPath, data => {
 						if (!coefficients.length && data && JSON.parse(data).length) {
 							coefficients = [...JSON.parse(data)];
 						}
-						console.log(coefficients);
 					});
 
 					await after.roundEnd(
