@@ -24,7 +24,6 @@ const initSumBets = async page => {
 		const minus2 = boxes[1].childNodes[0];
 		minus1.childNodes[0].click();
 		minus2.childNodes[0].click();
-		console.log(betCounter.one, betCounter.two);
 		for (let i = 0; i < betCounter.one; i++) {
 			plus1.childNodes[0].click();
 		}
@@ -40,7 +39,6 @@ const configureBets = async page => {
 	await page.evaluate(() => {
 		const inputs = document.querySelectorAll('#coef-input');
 		const checkboxes = document.querySelectorAll('.iJnjYA');
-		console.log(checkboxes);
 		if (checkboxes && checkboxes.length >= 4) {
 			checkboxes[1].click();
 			checkboxes[3].click();
@@ -103,7 +101,6 @@ const roundStarted = async (page, betButtons) => {
 	console.log('-------------------------------------------');
 	const isSomeNames = utils.someNames(playerLogs);
 	const logMessage = utils.getLogMessage(playerLogs);
-	console.log({ isSomeNames });
 	if (logMessage && isSomeNames) {
 		bot.sendMessage(logMessage);
 	}

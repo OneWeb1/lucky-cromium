@@ -56,6 +56,7 @@ app.get('/coefficients', (req, res) => {
 let isLockInterval = false;
 let isLockAdd = false;
 let roundNumber = 0;
+let unlockNumber = 0;
 
 const luckyParser = async () => {
 	try {
@@ -76,6 +77,7 @@ const luckyParser = async () => {
 
 		const interval = setInterval(async () => {
 			if (!isLockInterval) {
+				unlockNumber++;
 				try {
 					isLockInterval = true;
 					isLockAdd = true;
@@ -115,67 +117,57 @@ const luckyParser = async () => {
 					// 	console.log(`Не удалось прочитать файл ${playersPath}`);
 					// }
 
-					await after.roundEnd(
-						page,
-						(player, index, length) => {
-							const name = player.name;
-							const date = new Date();
+					await after.roundEnd(page, (player, index, length) => {
+						const name = player.name;
+						const date = new Date();
 
-							if (!p[name] && player.name.length >= 3) {
-								p[name] = {
-									avatar: randomRGBA(),
-									name,
-									games: [],
-								};
+						if (!p[name] && player.name.length >= 3) {
+							p[name] = {
+								avatar: randomRGBA(),
+								name,
+								games: [],
+							};
+						}
+						if (p[name])
+							p[name].games.push({
+								betNumber: player.bet,
+								betString: player.betString,
+								x: player.x,
+								xNumber: player.xNumber,
+								roundX: player.roundX,
+								betWin: player.betWin,
+								date: {
+									year: date.getFullYear(),
+									month: date.getMonth(),
+									date: date.getDate(),
+									day: date.getDay(),
+									hours: date.getHours(),
+									minutes: date.getMinutes(),
+									seconds: date.getSeconds(),
+								},
+							});
+
+						if (index === 0) {
+							if (isLockAdd) {
+								const date = new Date();
+								coefficients.unshift(player.roundX);
+								console.log({ unlockNumber });
+								writeFile(coefficientsPath, JSON.stringify(coefficients));
+								setTimeout(() => {
+									isLockAdd = true;
+								}, 5000);
+								isLockAdd = false;
 							}
-							if (p[name])
-								p[name].games.push({
-									betNumber: player.bet,
-									betString: player.betString,
-									x: player.x,
-									xNumber: player.xNumber,
-									roundX: player.roundX,
-									betWin: player.betWin,
-									date: {
-										year: date.getFullYear(),
-										month: date.getMonth(),
-										date: date.getDate(),
-										day: date.getDay(),
-										hours: date.getHours(),
-										minutes: date.getMinutes(),
-										seconds: date.getSeconds(),
-									},
-								});
-
-							if (index === 0) {
-								if (isLockAdd) {
-									const date = new Date();
-									coefficients.unshift(player.roundX);
-
-									writeFile(coefficientsPath, JSON.stringify(coefficients));
-									setTimeout(() => {
-										isLockAdd = true;
-									}, 5000);
-									isLockAdd = false;
-								}
-							}
-						},
-						// async coeff => {
-						// 	if (coeff && isLockAdd) {
-						// 		const text = await page.evaluate(el => el.innerText, coeff);
-						// 		coefficients.push(text);
-						// 		isLockAdd = false;
-						// 	}
-						// },
-					);
+						}
+					});
 					writeFile(playersPath, JSON.stringify(p));
-
-					isLockInterval = false;
 				} catch (e) {
 					console.log('client_loop: send disconnect: Connection reset');
 					console.log(e);
 					utils.watchReload();
 				}
+				unlockNumber = 0;
+				isLockInterval = false;
 			}
 		}, 1);
 	} catch (e) {
