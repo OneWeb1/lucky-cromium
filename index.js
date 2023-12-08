@@ -102,7 +102,7 @@ const luckyParser = async () => {
 					if (roundNumber >= 100) throw new Error('Reload');
 
 					try {
-						const data = fs.readdirSync(coefficientsPath, 'utf-8');
+						const data = fs.readFileSync(coefficientsPath, 'utf-8');
 						if (!coefficients.length && JSON.parse(data).length) {
 							coefficients = [...JSON.parse(data)];
 						}
@@ -111,7 +111,7 @@ const luckyParser = async () => {
 					}
 
 					try {
-						const data = fs.readdirSync(playersPath, 'utf-8');
+						const data = fs.readFileSync(playersPath, 'utf-8');
 						console.log(data);
 						if (
 							!Object.keys(p).length &&
@@ -120,6 +120,7 @@ const luckyParser = async () => {
 							p = [...JSON.parse(data)];
 						}
 					} catch (e) {
+						console.log(e);
 						console.log(`Не удалось прочитать файл ${playersPath}`);
 					}
 
