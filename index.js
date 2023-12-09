@@ -100,25 +100,27 @@ const luckyParser = async () => {
 					// 	// console.log(`Не удалось прочитать файл ${coefficientsPath}`);
 					// }
 					if (roundNumber && new Date() - deltaTime[0] > 6000) {
-						fs.access(playersPath, fs.constants.F_OK, err => {
-							if (!err) {
-								readFile(playersPath, data => {
-									if (!Object.keys(p).length && data && JSON.parse(data)) {
-										p = JSON.parse(data);
-									}
-								});
+						readFile(playersPath, data => {
+							if (!Object.keys(p).length && data && JSON.parse(data)) {
+								p = JSON.parse(data);
 							}
 						});
 
-						fs.access(coefficientsPath, fs.constants.F_OK, err => {
-							if (!err) {
-								readFile(coefficientsPath, data => {
-									if (!coefficients.length && JSON.parse(data).length) {
-										coefficients = [...JSON.parse(data)];
-									}
-								});
+						readFile(coefficientsPath, data => {
+							if (!coefficients.length && JSON.parse(data).length) {
+								coefficients = [...JSON.parse(data)];
 							}
 						});
+
+						// try {
+						// 	const data = fs.readFileSync(playersPath, 'utf-8');
+						// 	if (!Object.keys(p).length && data && JSON.parse(data)) {
+						// 		p = JSON.parse(data);
+						// 	}
+						// } catch (e) {
+						// 	console.log(e);
+						// 	console.log(`Не удалось прочитать файл ${playersPath}`);
+						// }
 
 						await after.roundEnd(page, (player, index, length) => {
 							const name = player.name;
