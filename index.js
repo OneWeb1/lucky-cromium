@@ -40,16 +40,22 @@ app.get('/', (req, res) => {
 });
 
 app.get('/players', (req, res) => {
-	readFile(playersPath, data => {
-		if (data) res.json(JSON.parse(data));
-		else res.json({ message: 'Data not found' });
-	});
+	try {
+		readFile(playersPath, data => {
+			if (data) res.json(JSON.parse(data));
+		});
+	} catch (e) {
+		res.json({ message: 'Data not found' });
+	}
 });
 
 app.get('/coefficients', (req, res) => {
 	readFile(coefficientsPath, data => {
-		if (data) res.json(JSON.parse(data));
-		else res.json({ message: 'Data not found' });
+		try {
+			if (data) res.json(JSON.parse(data));
+		} catch (e) {
+			res.json({ message: 'Data not found' });
+		}
 	});
 });
 
