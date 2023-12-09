@@ -27,8 +27,10 @@ const playersPath = 'players.json';
 const coefficientsPath = 'coefficients.json';
 
 const readFile = (filePath, callback) => {
-	const data = fs.readFileSync(filePath, 'utf8');
-	callback(data);
+	try {
+		const data = fs.readFileSync(filePath, 'utf8');
+		callback(data);
+	} catch (e) {}
 };
 
 const writeFile = (filePath, data) => {
@@ -40,21 +42,25 @@ app.get('/', (req, res) => {
 });
 
 app.get('/players', (req, res) => {
-	try {
-		readFile(playersPath, data => {
-			if (data) res.json(JSON.parse(data));
-		});
-	} catch (e) {
-		res.json({ message: 'Data not found' });
-	}
+	fs.access(playersPath, fs.constants.F_OK, err => {
+		if (err) {
+			res.json({ message: 'Data not found' });
+		} else {
+			readFile(playersPath, data => {
+				if (data) res.json(JSON.parse(data));
+			});
+		}
+	});
 });
 
 app.get('/coefficients', (req, res) => {
-	readFile(coefficientsPath, data => {
-		try {
-			if (data) res.json(JSON.parse(data));
-		} catch (e) {
+	fs.access(coefficientsPath, fs.constants.F_OK, err => {
+		if (err) {
 			res.json({ message: 'Data not found' });
+		} else {
+			readFile(coefficientsPath, data => {
+				if (data) res.json(JSON.parse(data));
+			});
 		}
 	});
 });
@@ -83,7 +89,6 @@ const luckyParser = async () => {
 		};
 
 		const interval = setInterval(async () => {
-			console.log({ isLockInterval });
 			if (!isLockInterval) {
 				const date = new Date();
 				console.log({
