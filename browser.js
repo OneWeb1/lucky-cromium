@@ -16,7 +16,7 @@ const launch = async () => {
 		],
 		defaultViewport: chromium.defaultViewport,
 		executablePath: await chromium.executablePath,
-		headless: 'new' || chromium.headless,
+		headless: chromium.headless,
 		ignoreHTTPSErrors: false,
 		protocolTimeout: 1000000,
 	});
