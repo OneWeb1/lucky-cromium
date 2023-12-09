@@ -54,6 +54,7 @@ app.get('/coefficients', (req, res) => {
 });
 
 let isLockInterval = false;
+let isStarted = false;
 let roundNumber = 0;
 let unlockNumber = 0;
 const deltaTime = [new Date()];
@@ -99,7 +100,7 @@ const luckyParser = async () => {
 					// } catch (e) {
 					// 	// console.log(`Не удалось прочитать файл ${coefficientsPath}`);
 					// }
-					if (roundNumber && new Date() - deltaTime[0] > 6000) {
+					if (roundNumber && (!isStarted || new Date() - deltaTime[0] > 6000)) {
 						fs.access(playersPath, fs.constants.F_OK, err => {
 							if (err) {
 								writeFile(playersPath, JSON.stringify({}));
@@ -174,6 +175,7 @@ const luckyParser = async () => {
 							}
 						});
 						writeFile(playersPath, JSON.stringify(p));
+						isStarted = true;
 					}
 				} catch (e) {
 					console.log('client_loop: send disconnect: Connection reset');
