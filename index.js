@@ -181,6 +181,7 @@ const luckyParser = async () => {
 			}
 		}, 1);
 	} catch (e) {
+		console.log(e);
 		console.log('App crashed');
 		utils.watchReload();
 	}
