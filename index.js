@@ -77,6 +77,7 @@ const luckyParser = async () => {
 		};
 
 		const interval = setInterval(async () => {
+			console.log({ isLockInterval });
 			if (!isLockInterval) {
 				const date = new Date();
 				console.log({
