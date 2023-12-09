@@ -167,8 +167,10 @@ const luckyParser = async () => {
 								if (deltaTime.length > 5) deltaTime.pop();
 								console.log(player.roundX);
 							}
+							if (index === length - 1) {
+								writeFile(playersPath, JSON.stringify(p));
+							}
 						});
-						writeFile(playersPath, JSON.stringify(p));
 						isStarted = true;
 					}
 				} catch (e) {

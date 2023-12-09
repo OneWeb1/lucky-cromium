@@ -2,7 +2,7 @@ const pn = require('./players-name');
 
 const selector = '.iMfqvu';
 
-const roundEnd = async (page, callback, callback2) => {
+const roundEnd = async (page, callback) => {
 	await page.waitForFunction(
 		selector => {
 			const element = document.querySelector('.cTwCmb');
@@ -22,7 +22,6 @@ const roundEnd = async (page, callback, callback2) => {
 		},
 		true,
 	);
-	if (callback2) callback2(await page.$('.sc-ksBlkl'));
 };
 
 module.exports = { roundEnd };
