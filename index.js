@@ -77,7 +77,6 @@ const luckyParser = async () => {
 		};
 
 		const interval = setInterval(async () => {
-			console.log('work');
 			if (!isLockInterval) {
 				const date = new Date();
 				console.log({
@@ -119,7 +118,7 @@ const luckyParser = async () => {
 								writeFile(coefficientsPath, JSON.stringify([]));
 							} else {
 								readFile(coefficientsPath, data => {
-									if (!coefficients.length && JSON.parse(data).length) {
+									if (!coefficients.length && data && JSON.parse(data).length) {
 										coefficients = [...JSON.parse(data)];
 									}
 								});
