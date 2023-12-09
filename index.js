@@ -100,15 +100,27 @@ const luckyParser = async () => {
 					// 	// console.log(`Не удалось прочитать файл ${coefficientsPath}`);
 					// }
 					if (roundNumber && new Date() - deltaTime[0] > 6000) {
-						readFile(playersPath, data => {
-							if (!Object.keys(p).length && data && JSON.parse(data)) {
-								p = JSON.parse(data);
+						fs.access(playersPath, fs.constants.F_OK, err => {
+							if (err) {
+								writeFile(playersPath, JSON.stringify({}));
+							} else {
+								readFile(playersPath, data => {
+									if (!Object.keys(p).length && data && JSON.parse(data)) {
+										p = JSON.parse(data);
+									}
+								});
 							}
 						});
 
-						readFile(coefficientsPath, data => {
-							if (!coefficients.length && JSON.parse(data).length) {
-								coefficients = [...JSON.parse(data)];
+						fs.access(coefficientsPath, fs.constants.F_OK, err => {
+							if (err) {
+								writeFile(coefficientsPath, JSON.stringify([]));
+							} else {
+								readFile(coefficientsPath, data => {
+									if (!coefficients.length && JSON.parse(data).length) {
+										coefficients = [...JSON.parse(data)];
+									}
+								});
 							}
 						});
 
