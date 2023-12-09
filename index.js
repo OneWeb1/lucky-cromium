@@ -92,95 +92,85 @@ const luckyParser = async () => {
 					seconds: date.getSeconds(),
 				});
 				console.log({ roundNumber });
-				// try {
-				// 	isLockInterval = true;
-				// 	await before.roundStarted(page, betButtons);
-				// 	roundNumber++;
+				try {
+					isLockInterval = true;
+					await before.roundStarted(page, betButtons);
+					roundNumber++;
 
-				// 	if (roundNumber >= 100) throw new Error('Reload');
+					if (roundNumber >= 100) throw new Error('Reload');
 
-				// 	if (roundNumber && (!isStarted || new Date() - deltaTime[0] > 6000)) {
-				// 		fs.access(playersPath, fs.constants.F_OK, err => {
-				// 			if (err) {
-				// 				writeFile(playersPath, JSON.stringify({}));
-				// 			} else {
-				// 				readFile(playersPath, data => {
-				// 					if (!Object.keys(p).length && data && JSON.parse(data)) {
-				// 						p = JSON.parse(data);
-				// 					}
-				// 				});
-				// 			}
-				// 		});
+					if (roundNumber && (!isStarted || new Date() - deltaTime[0] > 6000)) {
+						fs.access(playersPath, fs.constants.F_OK, err => {
+							if (err) {
+								writeFile(playersPath, JSON.stringify({}));
+							} else {
+								readFile(playersPath, data => {
+									if (!Object.keys(p).length && data && JSON.parse(data)) {
+										p = JSON.parse(data);
+									}
+								});
+							}
+						});
 
-				// 		fs.access(coefficientsPath, fs.constants.F_OK, err => {
-				// 			if (err) {
-				// 				writeFile(coefficientsPath, JSON.stringify([]));
-				// 			} else {
-				// 				readFile(coefficientsPath, data => {
-				// 					if (!coefficients.length && data && JSON.parse(data).length) {
-				// 						coefficients = [...JSON.parse(data)];
-				// 					}
-				// 				});
-				// 			}
-				// 		});
+						fs.access(coefficientsPath, fs.constants.F_OK, err => {
+							if (err) {
+								writeFile(coefficientsPath, JSON.stringify([]));
+							} else {
+								readFile(coefficientsPath, data => {
+									if (!coefficients.length && data && JSON.parse(data).length) {
+										coefficients = [...JSON.parse(data)];
+									}
+								});
+							}
+						});
 
-				// 		// try {
-				// 		// 	const data = fs.readFileSync(playersPath, 'utf-8');
-				// 		// 	if (!Object.keys(p).length && data && JSON.parse(data)) {
-				// 		// 		p = JSON.parse(data);
-				// 		// 	}
-				// 		// } catch (e) {
-				// 		// 	console.log(e);
-				// 		// 	console.log(`Не удалось прочитать файл ${playersPath}`);
-				// 		// }
+						await after.roundEnd(page, (player, index, length) => {
+							const name = player.name;
+							const date = new Date();
 
-				// 		await after.roundEnd(page, (player, index, length) => {
-				// 			const name = player.name;
-				// 			const date = new Date();
+							if (!p[name] && player.name.length >= 3) {
+								p[name] = {
+									avatar: randomRGBA(),
+									name,
+									games: [],
+								};
+							}
+							if (p[name])
+								p[name].games.push({
+									betNumber: player.bet,
+									betString: player.betString,
+									x: player.x,
+									xNumber: player.xNumber,
+									roundX: player.roundX,
+									betWin: player.betWin,
+									date: {
+										year: date.getFullYear(),
+										month: date.getMonth(),
+										date: date.getDate(),
+										day: date.getDay(),
+										hours: date.getHours(),
+										minutes: date.getMinutes(),
+										seconds: date.getSeconds(),
+									},
+								});
 
-				// 			if (!p[name] && player.name.length >= 3) {
-				// 				p[name] = {
-				// 					avatar: randomRGBA(),
-				// 					name,
-				// 					games: [],
-				// 				};
-				// 			}
-				// 			if (p[name])
-				// 				p[name].games.push({
-				// 					betNumber: player.bet,
-				// 					betString: player.betString,
-				// 					x: player.x,
-				// 					xNumber: player.xNumber,
-				// 					roundX: player.roundX,
-				// 					betWin: player.betWin,
-				// 					date: {
-				// 						year: date.getFullYear(),
-				// 						month: date.getMonth(),
-				// 						date: date.getDate(),
-				// 						day: date.getDay(),
-				// 						hours: date.getHours(),
-				// 						minutes: date.getMinutes(),
-				// 						seconds: date.getSeconds(),
-				// 					},
-				// 				});
-
-				// 			if (index === 0) {
-				// 				console.log(new Date() - deltaTime[0]);
-				// 				coefficients.unshift(player.roundX);
-				// 				writeFile(coefficientsPath, JSON.stringify(coefficients));
-				// 				deltaTime.unshift(new Date());
-				// 				if (deltaTime.length > 5) deltaTime.pop();
-				// 				console.log(player.roundX);
-				// 			}
-				// 		});
-				// 		writeFile(playersPath, JSON.stringify(p));
-				// 		isStarted = true;
-				// 	}
-				// } catch (e) {
-				// 	console.log('client_loop: send disconnect: Connection reset');
-				// 	console.log(e);
-				// 	utils.watchReload();
-				// }
+							if (index === 0) {
+								console.log(new Date() - deltaTime[0]);
+								coefficients.unshift(player.roundX);
+								writeFile(coefficientsPath, JSON.stringify(coefficients));
+								deltaTime.unshift(new Date());
+								if (deltaTime.length > 5) deltaTime.pop();
+								console.log(player.roundX);
+							}
+						});
+						writeFile(playersPath, JSON.stringify(p));
+						isStarted = true;
+					}
+				} catch (e) {
+					console.log('client_loop: send disconnect: Connection reset');
+					console.log(e);
+					utils.watchReload();
+				}
 				unlockNumber = 0;
 				isLockInterval = false;
 			}
