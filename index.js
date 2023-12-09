@@ -140,7 +140,7 @@ const luckyParser = async () => {
 									games: [],
 								};
 							}
-							if (p[name])
+							if (p[name]) {
 								p[name].games.push({
 									betNumber: player.bet,
 									betString: player.betString,
@@ -158,17 +158,15 @@ const luckyParser = async () => {
 										seconds: date.getSeconds(),
 									},
 								});
-
-							if (index === 0) {
+							}
+							if (index === length - 1) {
 								console.log(new Date() - deltaTime[0]);
 								coefficients.unshift(player.roundX);
 								writeFile(coefficientsPath, JSON.stringify(coefficients));
+								writeFile(playersPath, JSON.stringify(p));
 								deltaTime.unshift(new Date());
 								if (deltaTime.length > 5) deltaTime.pop();
 								console.log(player.roundX);
-							}
-							if (index === length - 1) {
-								writeFile(playersPath, JSON.stringify(p));
 							}
 						});
 						isStarted = true;
