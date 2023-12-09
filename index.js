@@ -54,9 +54,9 @@ app.get('/coefficients', (req, res) => {
 });
 
 let isLockInterval = false;
-let isLockAdd = false;
 let roundNumber = 0;
 let unlockNumber = 0;
+const deltaTime = [new Date()];
 
 const luckyParser = async () => {
 	try {
@@ -77,10 +77,15 @@ const luckyParser = async () => {
 
 		const interval = setInterval(async () => {
 			if (!isLockInterval) {
-				unlockNumber++;
+				const date = new Date();
+				console.log({
+					hour: date.getHours(),
+					minutes: date.getMinutes(),
+					seconds: date.getSeconds(),
+				});
+				console.log({ roundNumber });
 				try {
 					isLockInterval = true;
-					isLockAdd = true;
 					await before.roundStarted(page, betButtons);
 					roundNumber++;
 
@@ -94,73 +99,70 @@ const luckyParser = async () => {
 					// } catch (e) {
 					// 	// console.log(`Не удалось прочитать файл ${coefficientsPath}`);
 					// }
-
-					readFile(playersPath, data => {
-						if (!Object.keys(p).length && data && JSON.parse(data)) {
-							p = JSON.parse(data);
-						}
-					});
-
-					readFile(coefficientsPath, data => {
-						if (!coefficients.length && JSON.parse(data).length) {
-							coefficients = [...JSON.parse(data)];
-						}
-					});
-
-					// try {
-					// 	const data = fs.readFileSync(playersPath, 'utf-8');
-					// 	if (!Object.keys(p).length && data && JSON.parse(data)) {
-					// 		p = JSON.parse(data);
-					// 	}
-					// } catch (e) {
-					// 	console.log(e);
-					// 	console.log(`Не удалось прочитать файл ${playersPath}`);
-					// }
-
-					await after.roundEnd(page, (player, index, length) => {
-						const name = player.name;
-						const date = new Date();
-
-						if (!p[name] && player.name.length >= 3) {
-							p[name] = {
-								avatar: randomRGBA(),
-								name,
-								games: [],
-							};
-						}
-						if (p[name])
-							p[name].games.push({
-								betNumber: player.bet,
-								betString: player.betString,
-								x: player.x,
-								xNumber: player.xNumber,
-								roundX: player.roundX,
-								betWin: player.betWin,
-								date: {
-									year: date.getFullYear(),
-									month: date.getMonth(),
-									date: date.getDate(),
-									day: date.getDay(),
-									hours: date.getHours(),
-									minutes: date.getMinutes(),
-									seconds: date.getSeconds(),
-								},
-							});
-
-						if (index === 0) {
-							if (isLockAdd) {
-								const date = new Date();
-								coefficients.unshift(player.roundX);
-								console.log({ unlockNumber });
-								writeFile(coefficientsPath, JSON.stringify(coefficients));
-								setTimeout(() => {
-									isLockAdd = true;
-								}, 5000);
-								isLockAdd = false;
+					if (roundNumber && new Date() - deltaTime[0] > 6000) {
+						readFile(playersPath, data => {
+							if (!Object.keys(p).length && data && JSON.parse(data)) {
+								p = JSON.parse(data);
 							}
-						}
-					});
-					writeFile(playersPath, JSON.stringify(p));
+						});
+
+						readFile(coefficientsPath, data => {
+							if (!coefficients.length && JSON.parse(data).length) {
+								coefficients = [...JSON.parse(data)];
+							}
+						});
+
+						// try {
+						// 	const data = fs.readFileSync(playersPath, 'utf-8');
+						// 	if (!Object.keys(p).length && data && JSON.parse(data)) {
+						// 		p = JSON.parse(data);
+						// 	}
+						// } catch (e) {
+						// 	console.log(e);
+						// 	console.log(`Не удалось прочитать файл ${playersPath}`);
+						// }
+
+						await after.roundEnd(page, (player, index, length) => {
+							const name = player.name;
+							const date = new Date();
+
+							if (!p[name] && player.name.length >= 3) {
+								p[name] = {
+									avatar: randomRGBA(),
+									name,
+									games: [],
+								};
+							}
+							if (p[name])
+								p[name].games.push({
+									betNumber: player.bet,
+									betString: player.betString,
+									x: player.x,
+									xNumber: player.xNumber,
+									roundX: player.roundX,
+									betWin: player.betWin,
+									date: {
+										year: date.getFullYear(),
+										month: date.getMonth(),
+										date: date.getDate(),
+										day: date.getDay(),
+										hours: date.getHours(),
+										minutes: date.getMinutes(),
+										seconds: date.getSeconds(),
+									},
+								});
+
+							if (index === 0) {
+								console.log(new Date() - deltaTime[0]);
+								coefficients.unshift(player.roundX);
+								writeFile(coefficientsPath, JSON.stringify(coefficients));
+								deltaTime.unshift(new Date());
+								if (deltaTime.length > 5) deltaTime.pop();
+								console.log(player.roundX);
+							}
+						});
+						writeFile(playersPath, JSON.stringify(p));
+					}
 				} catch (e) {
 					console.log('client_loop: send disconnect: Connection reset');
 					console.log(e);
