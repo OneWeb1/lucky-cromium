@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
-//.
+
 const TelegramBot = require('./TelegramBot');
 const browser = require('./browser');
 const before = require('./before');
