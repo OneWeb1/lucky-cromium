@@ -13,7 +13,10 @@ const url =
 
 const app = express();
 const corsOptions = {
-	origin: 'http://localhost:5173',
+	origin: [
+		'http://localhost:5173',
+		'https://luckyjet-ood7z7acf-oneweb1.vercel.app',
+	],
 	optionsSuccessStatus: 200,
 };
 
@@ -196,5 +199,5 @@ app.listen(3003, () => {
 Xvfb -ac :0 -screen 0 1280x1024x16 &
 export DISPLAY=:0
 
-pm2 start index.js --wait-ready --watch --ignore-watch="node_modules players.json coefficients.json" --no-daemon
+pm2 start index.js --wait-ready --watch --ignore-watch="node_modules players.json coefficients.json .git/index.lock" --no-daemon
 */
