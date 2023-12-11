@@ -105,7 +105,7 @@ const luckyParser = async () => {
 					await before.roundStarted(page, betButtons);
 					roundNumber++;
 
-					if (roundNumber >= 100) throw new Error('Reload');
+					//if (roundNumber >= 100) throw new Error('Reload');
 
 					if (roundNumber && (!isStarted || new Date() - deltaTime[0] > 6000)) {
 						fs.access(playersPath, fs.constants.F_OK, err => {
@@ -177,7 +177,7 @@ const luckyParser = async () => {
 				} catch (e) {
 					console.log('client_loop: send disconnect: Connection reset');
 					console.log(e);
-					utils.watchReload();
+					//utils.watchReload();
 				}
 				unlockNumber = 0;
 				isLockInterval = false;
@@ -186,7 +186,7 @@ const luckyParser = async () => {
 	} catch (e) {
 		console.log(e);
 		console.log('App crashed');
-		utils.watchReload();
+		//utils.watchReload();
 	}
 };
 

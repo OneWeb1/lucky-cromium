@@ -20,7 +20,7 @@ const launch = async () => {
 		executablePath:
 			process.env.NODE_ENV === 'production'
 				? process.env.PUPPETEER_EXECUTABLE_PATH
-				: chromium.executablePath(),
+				: await chromium.executablePath,
 		headless: chromium.headless,
 		ignoreHTTPSErrors: false,
 		protocolTimeout: 1000000,
