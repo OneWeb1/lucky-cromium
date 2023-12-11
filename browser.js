@@ -1,4 +1,5 @@
 const chromium = require('chrome-aws-lambda');
+require('dotenv').config();
 
 const launch = async () => {
 	const browser = await chromium.puppeteer.launch({
@@ -10,12 +11,16 @@ const launch = async () => {
 			'--no-first-run',
 			'--no-zygote',
 			'--start-maximized',
-			// "--single-process",
+			'--single-process',
 			'--disable-gpu',
 			'--display=:0',
 		],
 		defaultViewport: chromium.defaultViewport,
-		executablePath: await chromium.executablePath,
+		// executablePath: await chromium.executablePath,
+		executablePath:
+			process.env.NODE_ENV === 'production'
+				? process.env.PUPPETEER_EXECUTABLE_PATH
+				: chromium.executablePath(),
 		headless: chromium.headless,
 		ignoreHTTPSErrors: false,
 		protocolTimeout: 1000000,
