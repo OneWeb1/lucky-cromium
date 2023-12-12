@@ -74,6 +74,10 @@ app.get('/coefficients', (req, res) => {
 	});
 });
 
+setInterval(() => {
+	number++;
+}, 1000);
+
 let isLockInterval = false;
 let isStarted = false;
 let roundNumber = 0;
