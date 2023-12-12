@@ -10,7 +10,7 @@ const launch = async () => {
 			'--no-first-run',
 			'--no-zygote',
 			'--start-maximized',
-			'--single-process',
+			// "--single-process",
 			'--disable-gpu',
 			'--display=:0',
 		],
