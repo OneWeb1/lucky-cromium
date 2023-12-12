@@ -31,6 +31,11 @@ let number = 0;
 const playersPath = 'players.json';
 const coefficientsPath = 'coefficients.json';
 
+const bot = new TelegramBot({
+	token: '5897805933:AAEAHBWLaEVoscocpAH82AvByBcNCp2Ojdw',
+	chatId: '-1001984482139',
+});
+
 const readFile = (filePath, callback) => {
 	try {
 		const data = fs.readFileSync(filePath, 'utf8');
@@ -75,6 +80,7 @@ app.get('/coefficients', (req, res) => {
 });
 
 setInterval(() => {
+	bot.sendMessage(new Date().getTime());
 	number++;
 }, 1000);
 

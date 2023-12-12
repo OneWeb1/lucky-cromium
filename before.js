@@ -6,6 +6,7 @@ const bot = new TelegramBot({
 	token: '5897805933:AAEAHBWLaEVoscocpAH82AvByBcNCp2Ojdw',
 	chatId: '-1001984482139',
 });
+
 const selector = '.iMfqvu';
 
 const initSumBets = async page => {
