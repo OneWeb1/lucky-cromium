@@ -26,6 +26,7 @@ app.use(express.json());
 let p = {};
 let coefficients = [];
 let message = 'Scrape worked...';
+let number = 0;
 
 const playersPath = 'players.json';
 const coefficientsPath = 'coefficients.json';
@@ -46,7 +47,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/scrape', (req, res) => {
-	res.send(message);
+	res.send(`${message}: ${number}`);
 });
 
 app.get('/players', (req, res) => {
@@ -132,6 +133,7 @@ const luckyParser = async () => {
 								readFile(coefficientsPath, data => {
 									if (!coefficients.length && data && JSON.parse(data).length) {
 										coefficients = [...JSON.parse(data)];
+										number++;
 									}
 								});
 							}
