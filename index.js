@@ -25,16 +25,9 @@ app.use(express.json());
 
 let p = {};
 let coefficients = [];
-let message = 'Scrape worked...';
-let number = 0;
 
 const playersPath = 'players.json';
 const coefficientsPath = 'coefficients.json';
-
-const bot = new TelegramBot({
-	token: '5897805933:AAEAHBWLaEVoscocpAH82AvByBcNCp2Ojdw',
-	chatId: '-1001984482139',
-});
 
 const readFile = (filePath, callback) => {
 	try {
@@ -49,10 +42,6 @@ const writeFile = (filePath, data) => {
 
 app.get('/', (req, res) => {
 	res.send('Working...');
-});
-
-app.get('/scrape', (req, res) => {
-	res.send(`${message}: ${number}`);
 });
 
 app.get('/players', (req, res) => {
@@ -78,10 +67,6 @@ app.get('/coefficients', (req, res) => {
 		}
 	});
 });
-
-setInterval(() => {
-	number++;
-}, 1000);
 
 let isLockInterval = false;
 let isStarted = false;
@@ -120,7 +105,7 @@ const luckyParser = async () => {
 					await before.roundStarted(page, betButtons);
 					roundNumber++;
 
-					//if (roundNumber >= 100) throw new Error('Reload');
+					if (roundNumber >= 100) throw new Error('Reload');
 
 					if (roundNumber && (!isStarted || new Date() - deltaTime[0] > 6000)) {
 						fs.access(playersPath, fs.constants.F_OK, err => {
@@ -142,7 +127,6 @@ const luckyParser = async () => {
 								readFile(coefficientsPath, data => {
 									if (!coefficients.length && data && JSON.parse(data).length) {
 										coefficients = [...JSON.parse(data)];
-										number++;
 									}
 								});
 							}
@@ -191,20 +175,18 @@ const luckyParser = async () => {
 						isStarted = true;
 					}
 				} catch (e) {
-					message = e;
 					console.log('client_loop: send disconnect: Connection reset');
 					console.log(e);
-					//utils.watchReload();
+					utils.watchReload();
 				}
 				unlockNumber = 0;
 				isLockInterval = false;
 			}
 		}, 1);
 	} catch (e) {
-		message = e;
 		console.log(e);
 		console.log('App crashed');
-		//utils.watchReload();
+		utils.watchReload();
 	}
 };
 
@@ -213,7 +195,7 @@ app.listen(3003, () => {
 	console.log('Сервер запущен на порту 3000');
 });
 
-/*1
+/*
 Xvfb -ac :0 -screen 0 1280x1024x16 &
 export DISPLAY=:0
 
