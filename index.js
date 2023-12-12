@@ -25,6 +25,7 @@ app.use(express.json());
 
 let p = {};
 let coefficients = [];
+let message = 'Scrape worked...';
 
 const playersPath = 'players.json';
 const coefficientsPath = 'coefficients.json';
@@ -42,6 +43,10 @@ const writeFile = (filePath, data) => {
 
 app.get('/', (req, res) => {
 	res.send('Working...');
+});
+
+app.get('/scrape', (req, res) => {
+	res.send(message);
 });
 
 app.get('/players', (req, res) => {
@@ -175,6 +180,7 @@ const luckyParser = async () => {
 						isStarted = true;
 					}
 				} catch (e) {
+					message = e;
 					console.log('client_loop: send disconnect: Connection reset');
 					console.log(e);
 					//utils.watchReload();
@@ -184,6 +190,7 @@ const luckyParser = async () => {
 			}
 		}, 1);
 	} catch (e) {
+		message = e;
 		console.log(e);
 		console.log('App crashed');
 		//utils.watchReload();
