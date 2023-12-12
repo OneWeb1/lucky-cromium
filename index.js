@@ -80,7 +80,6 @@ app.get('/coefficients', (req, res) => {
 });
 
 setInterval(() => {
-	bot.sendMessage(new Date().getTime());
 	number++;
 }, 1000);
 
