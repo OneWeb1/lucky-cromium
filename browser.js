@@ -1,30 +1,24 @@
-// const chromium = require('chrome-aws-lambda');
-const puppeteer = require('puppeteer');
-require('dotenv').config();
+const chromium = require('chrome-aws-lambda');
 
 const launch = async () => {
-	const browser = await puppeteer.launch({
+	const browser = await chromium.puppeteer.launch({
 		args: [
 			'--no-sandbox',
 			'--disable-setuid-sandbox',
-			// '--disable-dev-shm-usage',
-			// '--disable-accelerated-2d-canvas',
-			// '--no-first-run',
+			'--disable-dev-shm-usage',
+			'--disable-accelerated-2d-canvas',
+			'--no-first-run',
 			'--no-zygote',
-			// '--start-maximized',
+			'--start-maximized',
 			'--single-process',
-			// '--disable-gpu',
-			// '--display=:0',
+			'--disable-gpu',
+			'--display=:0',
 		],
-		// defaultViewport: chromium.defaultViewport,
-		// executablePath: await chromium.executablePath,
-		executablePath:
-			process.env.NODE_ENV === 'production'
-				? process.env.PUPPETEER_EXECUTABLE_PATH
-				: puppeteer.executablePath(),
-		headless: 'new' || chromium.headless,
-		// ignoreHTTPSErrors: false,
-		// protocolTimeout: 1000000,
+		defaultViewport: chromium.defaultViewport,
+		executablePath: await chromium.executablePath,
+		headless: chromium.headless,
+		ignoreHTTPSErrors: false,
+		protocolTimeout: 1000000,
 	});
 
 	return browser;
