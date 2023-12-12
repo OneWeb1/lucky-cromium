@@ -22,7 +22,7 @@ const launch = async () => {
 			process.env.NODE_ENV === 'production'
 				? process.env.PUPPETEER_EXECUTABLE_PATH
 				: puppeteer.executablePath(),
-		// headless: chromium.headless,
+		headless: 'new' || chromium.headless,
 		// ignoreHTTPSErrors: false,
 		// protocolTimeout: 1000000,
 	});
