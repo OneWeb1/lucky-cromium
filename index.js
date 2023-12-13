@@ -13,10 +13,7 @@ const url =
 
 const app = express();
 const corsOptions = {
-	origin: [
-		'http://localhost:5173',
-		'https://luckyjet-ood7z7acf-oneweb1.vercel.app',
-	],
+	origin: ['http://localhost:5173', 'https://luckyjet-orcin.vercel.app/'],
 	optionsSuccessStatus: 200,
 };
 
