@@ -55,7 +55,11 @@ const configureBets = async page => {
 const responseBeforeRoundPlayers = async (page, callback) => {
 	const skeletonSelector = '.react-loading-skeleton';
 
-	await page.waitForSelector(skeletonSelector, { timeout: 500000 });
+	try {
+		await page.waitForSelector(skeletonSelector, { timeout: 900000 });
+	} catch (e) {
+		utils.watchReload();
+	}
 
 	const players = (await page.$$('.sc-hlzHbZ')) || [];
 
