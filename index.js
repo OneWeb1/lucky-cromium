@@ -192,7 +192,7 @@ app.listen(3003, () => {
 	console.log('Сервер запущен на порту 3000');
 });
 
-/*
+/*1
 
 Xvfb -ac :0 -screen 0 1280x1024x16 &
 export DISPLAY=:0
