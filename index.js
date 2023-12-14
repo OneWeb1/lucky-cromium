@@ -193,7 +193,6 @@ app.listen(3003, () => {
 });
 
 /*
-1
 
 Xvfb -ac :0 -screen 0 1280x1024x16 &
 export DISPLAY=:0
