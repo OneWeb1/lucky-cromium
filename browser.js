@@ -1,5 +1,5 @@
 const chromium = require('chrome-aws-lambda');
-const { watchReload } = require('utils');
+const { watchReload } = require('./utils');
 
 const launch = async () => {
 	const browser = await chromium.puppeteer
