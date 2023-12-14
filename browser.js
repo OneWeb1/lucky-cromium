@@ -19,6 +19,7 @@ const launch = async () => {
 		headless: chromium.headless,
 		ignoreHTTPSErrors: false,
 		protocolTimeout: 1000000,
+		timeout: 0,
 	});
 
 	return browser;
