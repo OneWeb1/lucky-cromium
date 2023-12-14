@@ -1,26 +1,31 @@
 const chromium = require('chrome-aws-lambda');
+const { watchReload } = require('utils');
 
 const launch = async () => {
-	const browser = await chromium.puppeteer.launch({
-		args: [
-			'--no-sandbox',
-			'--disable-setuid-sandbox',
-			'--disable-dev-shm-usage',
-			'--disable-accelerated-2d-canvas',
-			'--no-first-run',
-			'--no-zygote',
-			'--start-maximized',
-			// "--single-process",
-			'--disable-gpu',
-			'--display=:0',
-		],
-		defaultViewport: chromium.defaultViewport,
-		executablePath: await chromium.executablePath,
-		headless: chromium.headless,
-		ignoreHTTPSErrors: false,
-		protocolTimeout: 1000000,
-		timeout: 0,
-	});
+	const browser = await chromium.puppeteer
+		.launch({
+			args: [
+				'--no-sandbox',
+				'--disable-setuid-sandbox',
+				'--disable-dev-shm-usage',
+				'--disable-accelerated-2d-canvas',
+				'--no-first-run',
+				'--no-zygote',
+				'--start-maximized',
+				// "--single-process",
+				'--disable-gpu',
+				'--display=:0',
+			],
+			defaultViewport: chromium.defaultViewport,
+			executablePath: await chromium.executablePath,
+			headless: chromium.headless,
+			ignoreHTTPSErrors: false,
+			protocolTimeout: 1000000,
+			timeout: 0,
+		})
+		.catch(err => {
+			watchReload();
+		});
 
 	return browser;
 };
