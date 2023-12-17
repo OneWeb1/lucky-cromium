@@ -1,4 +1,5 @@
 const axios = require('axios');
+const { watchReload } = require('./utils');
 
 class TelegramBot {
 	constructor(config) {
@@ -10,11 +11,15 @@ class TelegramBot {
 
 	async sendMessage(message) {
 		try {
-			await axios.post(this.urlApi, {
-				chat_id: this.chatId,
-				parse_mode: 'html',
-				text: message,
-			});
+			await axios
+				.post(this.urlApi, {
+					chat_id: this.chatId,
+					parse_mode: 'html',
+					text: message,
+				})
+				.catch(e => () => {
+					watchReload();
+				});
 			// console.log('Message sent successfully:', message);
 		} catch (error) {
 			console.log('Error sending message:', error);
